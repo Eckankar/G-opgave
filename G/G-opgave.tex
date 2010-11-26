@@ -1,0 +1,645 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{pslatex}
+\usepackage[danish]{babel}
+\usepackage{graphics}
+
+\title{En oversætter for Cat}
+
+\author{Godkendelsesopgave på kurset Oversættere}
+
+\date{Efterår 2010}
+
+\begin{document}
+
+%\setlength{\baselineskip}{0.95\baselineskip}
+
+\maketitle
+
+\section{Introduktion}
+
+Dette er den første del af rapportopgaven på Oversættere, efterår
+2010.  Opgaven skal løses i grupper på op til 3 personer.  Opgaven
+bliver stillet mandag d.\ 15/11 2010 og skal afleveres senest onsdag
+d.\ 17/12 2010.  Opgaven afleveres via kursushjemmesiden på Absalon.
+Brug gruppeafleveringsfunktionen i Absalon.  Alle medlemmer af gruppen
+skal på rapportforsiden angives med navn.  Der er ikke lavet en
+standardforside, så lav en selv.
+
+Denne del af rapportopgaven bedømmes som godkendt / ikke godkendt.
+Godkendelse af denne opgave er (sammen med godkendelse af fire ud af
+fem ugeopgaver) en forudsætning for deltagelse i den andel del af
+rapporteksamenen, der er en karaktergivende opgave, der løses
+individuelt.  En ikke-godkendt godkendelsesopgave kan {\em ikke}
+genafleveres.
+
+\section{Om opgaven}
+
+Opgaven går ud på at implementere en oversætter for sproget Cat, som
+er beskrevet i afsnit~\ref{cat}.
+
+Som hjælp hertil gives en fungerende implementering af en delmængde af
+Cat.  I afsnit~\ref{subset} er denne delmængde beskrevet.
+
+Der findes på kursussiden en zip-fil kaldet ``G.zip'', der indeholder
+opgaveteksten, implementeringen af delmængden af Cat samt et antal
+testprogrammer med input og forventet output. Der kan blive lagt flere
+testprogrammer ud i løbet af de første uger af opgaveperioden.
+
+Det er nødvendigt at modificere følgende filer:
+ 
+\begin{description}
+
+\item[{\tt Parser.grm}] Grammatikken for Cat med parseraktioner, der
+  opbygger den abstrakte syntaks.
+
+\item[{\tt Lexer.lex}] Leksikalske definitioner for {\em tokens} i
+  Cat.
+
+\item[{\tt Type.sml}] Typechecker for Cat.
+
+\item[{\tt Compiler.sml}] Oversætter fra Cat til MIPS assembler.
+  Oversættelsen sker direkte fra Cat til MIPS uden brug af
+  mellemkode.
+
+\end{description}
+
+\noindent
+Andre moduler indgår i oversætteren, men det er ikke nødvendigt at
+ændre disse.
+
+Til oversættelse af ovennævnte moduler (og andre moduler, der ikke
+skal ændres) bruges Moscow-ML oversætteren inklusive værktøjerne
+MosML-lex og MosML-yacc.  {\tt Compiler.sml} bruger datastruktur og
+registerallokator for en delmængde af MIPS instruktionssættet.
+Filerne {\tt compile.sh} og {\tt compile.bat} indeholder kommandoer
+for hhv.\ Linux og Windows til oversættelse af de nødvendige moduler.
+Der vil optræde nogle {\em warnings} fra compileren.  Disse kan
+ignoreres, men vær opmærksom på evt.\ nye fejlmeddelelser eller
+advarsler, når I retter i filerne.
+
+Til afvikling af de oversatte MIPS programmer bruges simulatoren MARS.
+
+\subsection*{Krav til besvarelsen}
+
+Besvarelsen afleveres som en PDF fil med rapporten samt en zip-fil,
+der indeholder og alle relevante program- og datafiler, sådan at man
+ved at pakke zip-filen ud i et ellers tomt katalog kan oversætte og
+køre oversætteren på testprogrammerne.  Dette kan f.eks.\ gøres ved,
+at I zipper hele jeres arbejdskatalog (og evt.\ underkataloger).
+
+Filerne afleveres via kursushjemmesiden.  Brug gruppeaflevering -- der
+skal {\em ikke} afleveres en kopi pr.\ gruppemedlem.
+
+Rapportforsiden skal angive alle medlemmer af gruppen med navn.
+
+Rapporten skal indeholde en kort beskrivelse af de ændringer, der
+laves i ovenstående komponenter.
+
+For {\tt Parser.grm} skal der kort forklares hvordan grammatikken er
+gjort entydig (ved omskrivning eller brug af
+operatorpræcedenserklæringer) samt beskrivelse af eventuelle
+ikke-åbenlyse løsninger, f.eks.\ i forbindelse med opbygning af
+abstrakt syntaks. Det skal bemærkes, at alle konflikter skal fjernes
+v.h.a.\ præcedenserklæringer eller omskrivning af syntaks.  Med andre
+ord må MosML-yacc {\em ikke} rapportere konflikter i tabellen.
+
+For {\tt Type.sml} og {\tt Compiler.sml} skal kort beskrives, hvordan
+typerne checkes og kode genereres for de nye konstruktioner.  Brug
+evt.\ en form, der ligner figur~6.2 og 7.3 i {\em Basics of Compiler
+Design}.
+
+Der vil primært lægges vægt på, at sproget implementeres korrekt, men
+effektivitet af den genererede kode kan også inddrages.  Optimeringer
+af særtilfælde vægtes ikke særligt højt, men omtanke omkring den
+almindelige kodegenerering gør.  Hvis der er åbenlyse ineffektiviteter
+ved generering af almindelig kode, vil forsøg på optimeringer af
+særtilfælde ligefrem kunne trække ned, da det vidner om forkert
+prioritering eller manglende forståelse.
+
+I skal ikke inkludere hele programteksterne i rapportteksten, men I
+skal inkludere de væsentligt ændrede eller tilføjede dele af
+programmerne i rapportteksten som figurer, bilag e.lign.  Hvis I
+henviser til dele af programteksten, skal disse dele inkluderes i
+rapporten.
+
+Rapporten skal beskrive hvorvidt oversættelse og kørsel af
+eksempelprogrammer (jvf.\ afsnit~\ref{eksempelprogrammer}) giver den
+forventede opførsel, samt beskrivelse af afvigelser derfra.  Endvidere
+skal det vurderes, i hvilket omfang de udleverede testprogrammer er
+dækkende og der skal laves nye testprogrammer, der dækker de største
+mangler ved testen.
+
+Kendte mangler i typechecker og oversætter skal beskrives, og i det
+omfang det er muligt, skal der laves forslag til hvordan disse evt.\
+kan udbedres.
+
+Det er i stort omfang op til jer selv at bestemme, hvad I mener er
+væsentligt at medtage i rapporten, sålænge de eksplicitte krav i dette
+afsnit er opfyldt.
+
+Rapporten bør holdes under 16 sider,.  Al væsentlig information om
+løsningen bør medtages i rapporten, men for mange irrelevante detaljer
+og udenomssnak vil trække ned.
+
+
+\subsection{Afgrænsninger af oversætteren}
+
+Det er helt i orden, at lexer, parser, typechecker og oversætter
+stopper ved den første fundne fejl.
+
+Hovedprogrammet {\tt CC.sml} kører typecheck på programmerne inden
+oversætteren kaldes, så oversætteren kan antage, at programmerne er
+uden typefejl m.m.
+
+Det kan antages, at de oversatte programmer er små nok til, at alle
+hopadresser kan ligge i konstantfelterne i branch- og hopordrer og at
+tupler er så små, at størrelse og {\em offsets} kan ligge i
+konstantfeltet i en instruktion.
+
+Det ikke nødvendigt at frigøre lager i hoben mens programmet kører.
+Der skal ikke laves test for overløb på stakken eller hoben.  Den
+faktiske opførsel ved overløb er udefineret, så om der sker fejl under
+afvikling eller oversættelse, eller om der bare beregnes mærkelige
+værdier, er underordnet.
+
+\subsection{MosML-Lex og MosML-yacc}
+
+Beskrivelser af disse værktøjer findes i Moscow ML's Owners Manual,
+som kan hentes via kursets hjemmeside. Yderligere information samt
+installationer af systemet til Windows og Linux findes på Moscow ML's
+hjemmeside (følg link fra kursets hjemmeside, i afsnittet om
+programmel).  Desuden er et eksempel på brug af disse værktøjer
+beskrevet i en note, der kan findes i {\tt Lex+Parse.zip}, som er
+tilgængelig via kursets hjemmeside.
+
+
+\section{Cat\label{cat}}
+
+Cat er et simpelt funktionelt programmeringssprog.
+
+Herunder beskrives syntaks og uformel semantik for sproget Cat og en
+kort beskrivelse af de filer, der implementerer sproget.
+
+\section{Syntaks}
+
+\begin{figure}
+\[\renewcommand{\arraystretch}{0.87}
+\begin{array}{lcl}
+Prog & \rightarrow & TyDecs~FunDecs~Exp \\[0.9ex]
+
+TyDecs & \rightarrow
+       & \mbox{\tt type}~\mbox{\bf id}~\mbox{\tt =~(}~Types~\mbox{\tt )}
+        ~TyDecs \\
+TyDecs & \rightarrow & \\[0.9ex]
+
+FunDecs & \rightarrow
+       & \mbox{\tt fun}~\mbox{\bf id}~\mbox{\tt :}~Type~\mbox{\tt ->}~Type~
+         Match~\mbox{\tt end}~FunDecs \\
+FunDecs & \rightarrow & \\[0.9ex]
+
+Type & \rightarrow & \mbox{\tt int} \\
+Type & \rightarrow & \mbox{\tt bool} \\
+Type & \rightarrow & \mbox{\bf id} \\[0.9ex]
+
+Types & \rightarrow & Type \\
+Types & \rightarrow & Types~\mbox{\tt ,}~Types \\[0.9ex]
+
+Match & \rightarrow & Pat ~\mbox{\tt =>}~Exp \\
+Match & \rightarrow & Match ~\mbox{\tt |}~Match \\[0.9ex]
+
+Pat & \rightarrow & \mbox{\bf num} \\
+Pat & \rightarrow & \mbox{\tt true} \\
+Pat & \rightarrow & \mbox{\tt false} \\
+Pat & \rightarrow & \mbox{\tt @} \\
+Pat & \rightarrow & \mbox{\bf id} \\
+Pat & \rightarrow & \mbox{\tt (}~Pats~\mbox{\tt )} \\[0.9ex]
+
+Pats & \rightarrow & Pat \\
+Pats & \rightarrow & Pats~\mbox{\tt ,}~Pats \\[0.9ex]
+
+Exp & \rightarrow & \mbox{\bf num} \\
+Exp & \rightarrow & \mbox{\tt true} \\
+Exp & \rightarrow & \mbox{\tt false} \\
+Exp & \rightarrow & \mbox{\tt @~:}~\mbox{\bf id} \\
+Exp & \rightarrow & \mbox{\bf id} \\
+Exp & \rightarrow & \mbox{\tt (}~Exps~\mbox{\tt )}~\mbox{\tt :}~\mbox{\bf id} \\
+Exp & \rightarrow & Exp~\mbox{\tt +}~Exp \\
+Exp & \rightarrow & Exp~\mbox{\tt -}~Exp \\
+Exp & \rightarrow & Exp~\mbox{\tt =}~Exp \\
+Exp & \rightarrow & Exp~\mbox{\tt <}~Exp \\
+Exp & \rightarrow & \mbox{\tt not}~Exp \\
+Exp & \rightarrow & Exp~\mbox{\tt and}~Exp \\
+Exp & \rightarrow & Exp~\mbox{\tt or}~Exp \\
+Exp & \rightarrow & \mbox{\tt if}~Exp~\mbox{\tt then}~Exp~\mbox{\tt else}~Exp \\
+Exp & \rightarrow & \mbox{\tt let}~Dec~\mbox{\tt in}~Exp \\
+Exp & \rightarrow & \mbox{\tt case}~Exp~\mbox{\tt of}~Match~\mbox{\tt end} \\
+Exp & \rightarrow & \mbox{\bf id}~Exp \\
+Exp & \rightarrow & \mbox{\tt read} \\
+Exp & \rightarrow & \mbox{\tt write}~Exp \\
+Exp & \rightarrow & \mbox{\tt (}~Exp~\mbox{\tt )} \\[0.9ex]
+
+Exps & \rightarrow & Exp \\
+Exps & \rightarrow & Exps~\mbox{\tt ,}~Exps \\[0.9ex]
+
+Dec & \rightarrow & Pat ~\mbox{\tt =}~Exp \\
+Dec & \rightarrow & Dec ~\mbox{\tt ;}~Dec
+\end{array}
+\renewcommand{\arraystretch}{1.0}
+\]
+\caption{Syntaks for Cat\label{syntaks}}
+\end{figure}
+
+\subsection{Leksikalske og syntaktiske detaljer}
+
+\begin{itemize}
+  
+\item Et navn ({\bf id}) består af bogstaver (både store og små),
+  cifre og understreger og skal starte med et bogstav.  Bogstaver er
+  engelske bogstaver, dvs.\ fra A til Z og a til z.  Nøgleord som
+  f.eks.\ {\tt if} er {\em ikke} legale navne.
+  
+\item Talkonstanter ({\bf num}) er ikke-tomme følger af cifrene 0-9.
+  Talkonstanter er begrænset til tal, der kan repræsenteres som
+  positive heltal i Moscow ML.
+
+\item Operatorerne {\tt +} og {\tt -} har samme præcedens og
+  er begge venstreassociative.
+
+\item Operatorerne {\tt <} og {\tt =} har samme præcedens og
+  er begge ikkeassociative.
+
+\item Operatoren {\tt not} binder stærkere end {\tt and}, som binder
+  stærkere end {\tt or}.  Både {\tt and} og {\tt or} er
+  højreassociative.  Alle binder svagere end {\tt <} og {\tt =}.
+
+\item {\tt else} og {\tt in} har samme præcedens og binder svagere end
+  de logiske operatorer.
+
+\item {\tt =>} binder svagere end {\tt else} og {\tt in}.
+
+\item Funktionsanvendelse og {\tt write} binder stærkere end {\tt +}
+  og {\tt -}.  Funktionsanvendelse er højreassociative, så {\tt f~g~x}
+  grupperes som {\tt f~(g~x)}.  Bemærk, at dette er modsat
+  konventionen i SML.
+
+\item Der er separate navnerum for variabler, funktioner og typer.
+
+\item Kommentarer starter med {\tt //} og slutter ved det
+  efterfølgende linjeskift.
+
+\end{itemize}
+
+\section{Semantik}
+
+Hvor intet andet er angivet, er semantikken for de forskellige
+konstruktioner i sproget identisk med semantikken for tilsvarende
+konstruktioner i SML.  Dog er tal 32-bit tokomplementtal og aritmetik
+({\tt +} og {\tt -}) er uden detektion af {\em overflow}.
+
+Et Cat program består af erklæringer af typer efterfulgt af
+erklæringer af funktioner og til sidst et udtryk.  Kørsel af et
+program sker ved beregning af dette udtryk.  Alle typer og funktioner
+har virkefelt i hele programmet, så de er gensidigt rekursive.
+Typenavne og funktionsnavne bruger forskellige navnerum, så det er
+tilladt med en funktion med samme navn som en type, men det er ikke
+tilladt at have to typer eller to funktioner med samme navn.
+
+Udover heltal (typen {\tt int}) og boolske værdier (typen {\tt bool})
+har Cat også tupelværdier, dvs.\ par, tripler, kvadrupler osv.  En
+tupeltype erklæres i en typeerklæring, hvor den beskrives som en
+ikke-tom liste af typer adskilt af kommaer inde i et parentespar.  En
+værdi af en tupeltype $tt$, hvor $tt$ er erklæret som {\tt
+  ($t_1$,\ldots,$t_n$)} kan enten være en nulreference eller en
+reference til $n$ hoballokerede maskinord, der indeholder værdier af
+typerne $t_1$, \ldots, $t_n$.  En nulreference skrives som {\tt @}.
+Når {\tt @} bruges som udtryk, skal dets type angives efter et {\tt
+  :}, f.eks. {\tt @~:~list}.  Man bygger en tupel (der ikke er en
+nulreference) ved at angive elementerne adskilt af kommaer inde i et
+sæt parenteser og derefter angive tuplets type efter et kolon.
+
+Man kan f.eks.\ definere typen {\tt list} af lister af heltal med
+erklæringen
+
+{\tt type list = (int,list)}
+
+En liste af heltallene 1, 2 og 3 kan da konstrueres med udtrykket
+
+{\tt (1, (2, (3, @:list):list):list):list}
+
+Bemærk, at typen angives både ved nulreferencer og ved konstruktion af
+ikke-tomme lister.
+
+Betingelser er sammenligning af udtryk med sammenligningsoperatorerne
+{\tt <} (mindre end) eller {\tt =} (lig med) eller en logisk operator
+anvendt på et eller flere logiske udtryk.  De logiske operatorer {\tt
+  and} (konjunktion) og {\tt or} (disjunktion) er sekventielle
+operatorer, så andet argument udregnes ikke, hvis det første argument
+er tilstrækkeligt til at afgøre resultatet.  Nøgleordene {\tt true} og
+{\tt false} er boolske konstanter, der kan bruges både i mønstre og
+udtryk.
+
+Udtrykket {\tt if~$e_1$~then~$e_2$~else~$e_3$} virker ligesom det
+tilsvarende udtryk i SML.  Det skal verificeres på oversættelsestid,
+at $e_1$ er af typen {\tt bool} og at $e_2$ og $e_3$ har samme type.
+
+Cat bruger mønstergenkendelse ({\em pattern matching}) i stil med SML.
+En funktionsdefinition består af erklæring af funktionens navn,
+parametertype og resultattype samt en {\em Match}, der er en række
+regler adskilt af {\tt |}.  En regel består af et mønster ({\em Pat}),
+en dobbeltpil ({\tt =>}) og et udtryk({\em Exp}).  Semantikken er, at
+reglerne i et {\em Match} afprøves en af gangen, indtil man finder
+et, hvor mønstret matcher argumentværdien.  Når dette sker, beregnes
+det tilhørende udtryk.  Variable i et mønster bindes til de
+tilsvarende dele af argumentet og kan bruges i udtrykket.  Hvis ingen
+regler matcher argumentværdien, udskrives en fejlmeddelelse.  Et
+mønster matcher en værdi efter følgende regler:
+
+\begin{itemize}
+
+\item Et mønster, der er en talkonstant $k$, matcher heltalsværdien
+  $k$.
+
+\item Et mønster, der er en boolsk konstant ({\tt true} eller {\tt
+    false}) matcher henholdsvis den sande og den falske boolske værdi.
+
+\item Mønsteret {\tt @} matcher en nulreference af en vilkårlig
+  tupeltype.
+
+\item Mønsteret {\tt ($p_1$,\ldots,$p_n$)} matcher en tupelværdi af
+  formen {\tt ($v_1$,\ldots,$v_n$)}, hvis $p_i$ matcher $v_i$ for alle
+  $i$ fra 1 til $n$.
+
+\item Et mønster, der er en variabel $x$, matcher enhver værdi, og
+  definerer $x$ til at have denne værdi i det udtryk, der hører til
+  mønstret.
+
+\end{itemize}
+
+\noindent
+Det skal på oversættelsestidspunktet verificeres, at mønsteret er
+konsistent med den erklærede parametertype.  Der bruges følgende
+regler:
+
+
+\begin{itemize}
+
+\item Et mønster, der er en talkonstant $k$, er konsistent med typen
+  {\tt int}.
+
+\item Et mønster, der er en boolsk konstant ({\tt true} eller {\tt
+    false}) er konsistent med typen {\tt bool}.
+
+\item Mønsteret {\tt @} er konsistent med alle tupeltyper.
+
+\item Mønsteret {\tt ($p_1$,\ldots,$p_n$)} er konsistent med
+  tupeltypen $tt$, hvis $tt$ er defineret til {\tt
+    ($t_1$,\ldots,$t_n$)} og $p_i$ er konsistent med $t_i$ for alle
+  $i$ fra 1 til $n$.
+
+\item Et mønster, der er en variabel $x$, er konsistent med enhver
+  type $t$.  $x$ vil have typen $t$ i det udtryk, der hører til
+  mønstret.
+
+\end{itemize}
+
+\noindent
+Alle udtrykkene i reglerne i samme {\em Match} skal have samme type.
+
+Bemærk, at en funktion altid har præcis en parameter, der dog kan være
+en tupel.  Det skal verificere, at funktionens erklærede resultattype
+stemmer overens med typen, der returneres af den {\em Match}, der
+udgør funktionens krop.
+
+Man kan også bruge en {\em Match} i {\tt case}-udtryk.  Et sådant har
+formen\newline {\tt case~$e$~of~$M$~end}, hvor $e$ er et udtryk og $M$
+er en {\em Match}.  Udtrykket $e$ beregnes og matches mod reglerne i
+$M$, ligesom i funktionsdefinitioner.
+
+Mønstre kan også bruges i {\tt let}-udtryk.  Et sådant har
+formen\newline {\tt let~$p_1$=$e_1$;\ldots;$p_n$=$e_n$~in~$e_0$}.
+Semantisk har dette udtryk samme betydning som udtrykket
+{\tt ~case~$e_1$~of~$p_1$~=>~\ldots~case~$e_n$~of~$p_n$~=>~$e_0$~end~\ldots~end}
+
+En funktionsanvendelse er af formen $f~e$, hvor $f$ er funktionens
+navn og $e$ er et udtryk, der beregner argumentet til funktionen.  Det
+skal verificeres på oversættelsestidspunktet, at argumentet har samme
+type som den erklærede parametertype til $f$.  Typen af kaldet er
+funktionens erklærede resultattype.
+
+Udtrykket {\tt read} indlæser et heltal og returnerer dens værdi.
+Udtrykket {\tt write~$e$} beregner $e$ til et heltal, udskriver dette
+og returnerer det.  Det skal verificeres, at $e$ har typen {\tt int}.
+
+\section{En delmængde af Cat\label{subset}}
+
+Den udleverede oversætter håndterer kun en delmængde af Cat.
+Begrænsningerne er som følger:
+
+\begin{itemize}
+
+\item Tupler, boolske værdier og erklæringer, udtryk og mønstre, der
+  definerer, bruger eller returnerer disse, er ikke implementeret.
+
+\item {\tt case}-udtryk og {\tt let}-udtryk er ikke implementeret.
+
+\end{itemize}
+
+Bemærk, at filen {\tt Cat.sml} har abstrakt syntaks for hele
+sproget.
+
+\section{Abstrakt syntaks og oversætter}
+
+Filen {\tt Cat.sml} angiver datastrukturer for den abstrakte
+syntaks for programmer i Cat.  Hele programmet har type {\tt
+  Cat.Prog}.
+
+Filen {\tt CC.sml} indeholder et program, der kan indlæse, typechecke
+og oversætte et Cat-program.  Det kaldes ved at angive filnavnet for
+programmet (uden extension) på kommandolinien, f.eks. {\tt CC fib2}.
+Extension for Cat-programmer er {\tt .cat}, f.eks.\ {\tt fib2.cat}.  Når
+Cat-programmet er indlæst og checket, skrives den oversatte kode
+ud på en fil med samme navn som programmet men med extension {\tt
+  .asm}. Kommandoen ``{\tt CC fib2}'' vil altså tage en kildetekst fra
+filen {\tt fib2.cat} og skrive kode ud i filen {\tt fib2.asm}.
+
+Den symbolske oversatte kode kan indlæses og køres af MARS.
+Kommandoen ``{\tt java -jar Mars.jar fib2.asm}'' vil køre programmet
+og læse inddata fra standard input og skrive uddata til standard
+output.
+
+Checkeren er implementeret i filerne {\tt Type.sig} og {\tt
+Type.sml}.  Oversætteren er implementeret i filerne {\tt Compiler.sig}
+og {\tt Compiler.sml}.
+
+Hele oversætteren kan genoversættes (inklusive generering af lexer og
+parser) ved at skrive {\tt source compile} på kommandolinien (mens man
+er i et katalog med alle de relevante filer, inclusive {\tt compile}).
+
+Som hjælp til debugging af parser kan man bruge programmet {\tt
+  SeeSyntax.sml}.  Hvis man kører dette program i det interaktive
+system ({\tt mosml~SeeSyntax.sml}) kan man bruge funktionen {\tt
+  showsyntax} med et filnavn som argument, og se ML datastrukturen for
+den abstrakte syntaks.
+
+\section{Eksempelprogrammer\label{eksempelprogrammer}}
+
+Der er givet en række eksempelprogrammer skrevet i Cat
+
+\begin{description}
+
+\item[{\tt ackermann.cat}] indlæser to tal $m$ og $n$ og udskriver
+  $ackermann(m,n)$, hvor $ackermann$ er Ackermann's funktion.
+  Afprøver {\tt case} og boolske mønstre.
+
+\item[{\tt fib.cat}] indlæser et ikke-negativt tal $n$ og udskriver
+  $fib(n)$, hvor $fib$ er Fibonacci's funktion.
+
+\item[{\tt logic.cat}] afprøver logiske funktioner.  Der indlæses ikke
+  noget inddata.
+
+\item[{\tt pair.cat}] indlæser to tal, bygger et par af dem og skriver
+  dem ud i omvendt rækkefølge.
+
+\item[{\tt qsort.cat}] indlæser tal indtil et 0 indlæses, bygger en
+  liste af tallene (fraregnet nullet), sorterer listen og skriver den
+  sorterede liste ud.
+
+\item[{\tt reverse.cat}] indlæser tal, indtil et 0 indlæses.  Derefter
+  skrives tallene ud i omvendt rækkefølge.
+
+\item[{\tt rwlist.cat}] indlæser tal indtil et 0 indlæses, bygger en
+  liste af tallene (fraregnet nullet) og skriver listeelementerne ud.
+
+\item[{\tt treesort.cat}] Har samme funktion som {\tt qsort.cat}, men
+  bruger en anden sorteringsalgoritme.
+
+\item[{\tt option.cat}] Definerer og bruger en tupeltype med et
+  element.
+
+\end{description}
+
+\noindent
+Hvert eksempelprogram {\em
+program}{\tt .cat} skal oversættes og køres på inddata, der er givet i
+filen {\em program}{\tt .in}.  Uddata fra kørslen af et program skal
+stemme overens med det, der er givet i filen {\em program}{\tt .out}.
+Hvis der ikke er nogen {\em program}{\tt .in} fil, køres programmet
+uden inddata.
+
+Der er endvidere givet et antal nummererede testprogrammer ({\tt
+  error01.cat, \ldots, error19.cat}), der indeholder diverse fejl
+eller inkonsistenser.  ({\tt error01.cat, \ldots, error16.cat})
+indeholder fejl, der skal fanges i checkeren.  Der er ikke input-
+eller outputfiler til disse programmer. ({\tt error17.cat, \ldots,
+  error19.cat}) fejler en {\tt pattern match} ved en
+funktionsdefinition, en {\tt case} eller en {\tt let}.  De skal derfor
+kunne oversættes uden fejl, men skal ved kørsel (nogle med tilhørende
+inputfiler) give fejlmeddelelser, der angiver køretidsfejlenes
+omtrentlige position i programmerne.
+
+Kun {\tt fib.cat} og {\tt error17.cat} kan oversættes med den
+udleverede oversætter.  De andre programmer bruger de manglende
+sprogelementer, og vil derfor give syntaksfejl.
+
+Selv om testprogrammerne kommer godt rundt i sproget, kan de på ingen
+måde siges at være en udtømmende test hverken af normal kørsel eller
+fejlsituationer.  Vurder, om der er ting i oversætteren, der ikke er
+testet, og lave yderligere testprogrammer efter behov.
+  
+Selv om registerallokatoren ikke laver spill, er der rigeligt med
+registre til at eksempelprogrammerne kan oversættes uden spill.
+Derfor betragtes det som en fejl, hvis registerallokatoren rejser
+undtagelsen \verb`not_colourable` for et af eksempelprogrammerne.
+
+\section{Milepæle}
+
+Da opgaven først skal afleveres efter fem uger, kan man fristes til at
+udskyde arbejdet på opgaven til sidst i perioden.  Dette er en meget
+dårlig ide.  Herunder er angivet retningslinier for hvornår de
+forskellige komponenter af oversætteren bør være færdige, inklusive de
+dele af rapporten, der beskriver disse.
+
+\begin{description}
+  
+\item[Uge 46] Lexeren kan genereres og oversættes (husk at erklære de
+nye tokens i parseren).  Rapportafsnit om lexer skrives.
+  
+\item[Uge 47] Parseren kan genereres og oversættes.  Rapportafsnit om
+lexer og parser færdigt.
+  
+\item[Uge 48] Checkeren er implementeret.  Rapportafsnit om
+checker skrives.
+  
+\item[Uge 49] Oversætteren er implementeret, rapportafsnit om denne
+  skrives.
+
+\item[Uge 50] Afsluttende afprøvning og rapportskrivning, rapporten
+  afleveres om onsdagen.
+
+\end{description}
+
+\noindent
+Bemærk, at typechecker og kodegenerering er væsentligt større opgaver
+end lexer og parser.
+
+Efter hvert af de ovenstående skridt bør man genoversætte hele
+oversætteren og prøvekøre den for testprogrammerne.  De endnu ikke
+udvidede moduler kan ved oversættelse rapportere om ikke-udtømmende
+pattern-matching, og ved køretid kan de rejse undtagelsen ``Match''.
+Man kan i {\tt CC.sml} udkommentere kald til de senere faser for at
+afprøve sprogudvidelserne for de moduler (faser), der allerede er
+implementerede.
+
+Jeres instruktor vil gerne løbende læse og komme med feedback til
+afsnit af rapporten.  I skal dog regne med, at der kan gå noget tid,
+inden I får svar (så bed ikke om feedback lige før
+afleveringsfristen), og I skal ikke forvente, at et afsnit bliver læst
+igennem flere gange.
+
+\section{Vink}
+
+\begin{itemize}
+
+\item For at undgå en shift/reduce konflikt kan det være en ide at
+  opdele produktionen udtryk til tupelkonstruktion i to separate
+  produktioner: En til tupler med {\'e}t element og en til tupler med
+  flere elementer.  Produktionerne for {\em Exps} kan dermed ændres,
+  så der er mindst to udtryk adskilt af komma.
+
+\item {\bf KISS}: {\em Keep It Simple, Stupid}.  Lav ikke avancerede
+  løsninger, før I har en fungerende simpel løsning, inklusive udkast
+  til et rapportafsnit, der beskriver denne.  Udvidelser og
+  forbedringer kan derefter tilføjes og beskrives som sådan i
+  rapporten.
+  
+\item I kan antage, at læseren af rapporten er bekendt med pensum til
+  kurset, og I kan frit henvise til kursusbøger, noter og
+  opgavetekster.
+
+\item Hver gang I har ændret i et modul af oversætteren, så genoversæt
+hele oversætteren (med {\tt source compile}).  Dog kan advarsler om
+``pattern matching is not exhaustive'' i reglen ignoreres indtil alle
+moduler er udvidede.
+  
+\item Når man oversætter signaturen til den genererede parser, vil
+  {\tt mosmlc} give en ``Compliance Warning''. Denne er uden
+  betydning, og kan ignoreres.
+
+\item Når I udvider lexeren, skal I erklære de nye tokens i parseren
+med {\tt \%token} erklæringer og derefter generere parseren og
+oversætte den {\em inden} i oversætter lexeren, ellers vil I få
+typefejl.
+  
+\item I lexerdefinitionen skal enkelttegn stå i {\em backquotes} ({\tt
+    `}), {\em ikke} almindelige anførselstegn ({\tt '}), som i C eller
+  Java.  Det er tilladt at bruge dobbelte anførslestegn (\verb`"`)
+  også om enkelttegn.
+
+\end{itemize}
+
+\end{document}
+
+
