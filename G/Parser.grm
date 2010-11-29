@@ -1,4 +1,4 @@
-
+(* vim: set filetype=sml : *)
 %token <int*(int*int)> NUM
 %token <string*(int*int)> ID
 %token <(int*int)> PLUS MINUS
@@ -52,9 +52,16 @@ Match : Pat MATCHARROW Exp
 ;
 
 Exp :  NUM             { Cat.Num $1 }
+     | TRUE            { Cat.True $1 }
+     | FALSE           { Cat.False $1 }
      | ID              { Cat.Var $1 }
      | Exp PLUS Exp    { Cat.Plus ($1, $3, $2) }
      | Exp MINUS Exp   { Cat.Minus ($1, $3, $2) }
+     | Exp EQUAL Exp   { Cat.Equal ($1, $3, $2) }
+     | Exp LESS Exp    { Cat.Less ($1, $3, $2) }
+     | NOT Exp         { Cat.Not ($2, $1) }
+     | Exp AND Exp     { Cat.And ($1, $3, $2) }
+     | Exp OR Exp      { Cat.Or ($1, $3, $2) } 
      | ID Exp %prec WRITE
                        { Cat.Apply (#1 $1, $2, #2 $1) }
      | READ            { Cat.Read $1 }
