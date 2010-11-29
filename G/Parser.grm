@@ -8,6 +8,7 @@
 %token <(int*int)> READ WRITE EOF
 %token <(int*int)> TRUE FALSE
 %token <(int*int)> CASE OF LET IN
+%token <(int*int)> IF THEN ELSE
 %token <(int*int)> EQUAL LESS
 %token <(int*int)> AND OR NOT
 
