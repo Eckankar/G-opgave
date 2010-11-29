@@ -112,6 +112,6 @@ Exps : Exp COMMA Exp   { [$1, $3] }
 ;
 
 Dec : Pat EQUAL Exp    { [Cat.Dec ($1, $3, $2)] }
-    | Dec SEMICOLON Dec
-                       { $1 @ $3 }
+    | Pat EQUAL Exp SEMICOLON Dec
+                       { Cat.Dec ($1, $3, $2) :: $5 }
 ;
