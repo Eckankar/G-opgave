@@ -15,7 +15,7 @@
        else getLineCol pos (line-1) ps
    | getLineCol pos line [] = raise LexicalError ("",(0,0))
 
- fun lexerError lexbuf s = 
+ fun lexerError lexbuf s =
      raise LexicalError (s, getPos lexbuf)
 
  fun keyword (s, pos) =
@@ -25,6 +25,13 @@
        | "fun"          => Parser.FUN pos
        | "read"         => Parser.READ pos
        | "write"        => Parser.WRITE pos
+       | "case"         => Parser.CASE pos
+       | "of"           => Parser.OF pos
+       | "let"          => Parser.LET pos
+       | "in"           => Parser.IN pos
+       | "true"         => Parser.TRUE pos
+       | "false"        => Parser.FALSE pos
+       | "bool"         => Parser.BOOL pos
        | _              => Parser.ID (s, pos)
 
  }
@@ -49,6 +56,7 @@ rule Token = parse
   | "->"                { Parser.ARROW (getPos lexbuf) }
   | "=>"                { Parser.MATCHARROW (getPos lexbuf) }
   | `|`                 { Parser.BAR (getPos lexbuf) }
+  | `,`                 { Parser.COMMA (getPos lexbuf) }
   | eof                 { Parser.EOF (getPos lexbuf) }
   | _                   { lexerError lexbuf "Illegal symbol in input" }
 
