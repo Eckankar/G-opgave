@@ -38,16 +38,16 @@
 
 %%
 
-Prog : TyDecs FunDecs Exp EOF { Cat.Prog ($1,$2,$3) }
+Prog : TyDecs FunDecs Exp EOF { ($1,$2,$3) }
 ;
 
 TyDecs : TYPE ID EQUAL LPAR Types RPAR TyDecs
-                       { Cat.TyDec (#1 $2, $5, $1) :: $7 }
+                       { (#1 $2, $5, $1) :: $7 }
        |               { [] }
 ;
 
 FunDecs : FUN ID COLON Type ARROW Type Match END FunDecs
-                       { Cat.FunDec (#1 $2, $4, $6, $7, $1) :: $9 }
+                       { (#1 $2, $4, $6, $7, $1) :: $9 }
         |              { [] }
 ;
 
@@ -111,7 +111,7 @@ Exps : Exp COMMA Exp   { [$1, $3] }
      | Exp COMMA Exps  { $1 :: $3 }
 ;
 
-Dec : Pat EQUAL Exp    { [Cat.Dec ($1, $3, $2)] }
+Dec : Pat EQUAL Exp    { [($1, $3, $2)] }
     | Pat EQUAL Exp SEMICOLON Dec
-                       { Cat.Dec ($1, $3, $2) :: $5 }
+                       { ($1, $3, $2) :: $5 }
 ;
