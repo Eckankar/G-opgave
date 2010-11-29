@@ -38,7 +38,7 @@
 
 %%
 
-Prog : FunDecs Exp EOF { ([],$1,$2) }
+Prog : TyDecs FunDecs Exp EOF { Cat.Prog ($1,$2,$3) }
 ;
 
 TyDecs : TYPE ID EQUAL LPAR Types RPAR TyDecs
