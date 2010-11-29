@@ -25,6 +25,9 @@
        | "fun"          => Parser.FUN pos
        | "read"         => Parser.READ pos
        | "write"        => Parser.WRITE pos
+       | "if"           => Parser.IF pos
+       | "then"         => Parser.THEN pos
+       | "else"         => Parser.ELSE pos
        | "case"         => Parser.CASE pos
        | "of"           => Parser.OF pos
        | "let"          => Parser.LET pos
