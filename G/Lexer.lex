@@ -32,6 +32,9 @@
        | "true"         => Parser.TRUE pos
        | "false"        => Parser.FALSE pos
        | "bool"         => Parser.BOOL pos
+       | "and"          => Parser.AND pos
+       | "or"           => Parser.OR pos
+       | "not"          => Parser.NOT pos
        | _              => Parser.ID (s, pos)
 
  }
@@ -57,6 +60,8 @@ rule Token = parse
   | "=>"                { Parser.MATCHARROW (getPos lexbuf) }
   | `|`                 { Parser.BAR (getPos lexbuf) }
   | `,`                 { Parser.COMMA (getPos lexbuf) }
+  | `=`                 { Parser.EQUAL (getPos lexbuf) }
+  | `<`                 { Parser.LESS (getPos lexbuf) }
   | eof                 { Parser.EOF (getPos lexbuf) }
   | _                   { lexerError lexbuf "Illegal symbol in input" }
 
