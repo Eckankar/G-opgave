@@ -1,6 +1,0 @@
-// error14.cat
-// use of let-declared variable does not match declaration
-
-let x = read in
-  let x = false in
-    x+x
