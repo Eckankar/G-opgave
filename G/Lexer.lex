@@ -35,6 +35,7 @@
        | "and"          => Parser.AND pos
        | "or"           => Parser.OR pos
        | "not"          => Parser.NOT pos
+       | "type"         => Parser.TYPE pos
        | _              => Parser.ID (s, pos)
 
  }

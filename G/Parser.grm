@@ -6,7 +6,7 @@
 %token <(int*int)> END MATCHARROW
 %token <(int*int)> INT BOOL BAR COLON COMMA
 %token <(int*int)> READ WRITE EOF
-%token <(int*int)> TRUE FALSE
+%token <(int*int)> TRUE FALSE TYPE
 %token <(int*int)> CASE OF LET IN
 %token <(int*int)> IF THEN ELSE
 %token <(int*int)> EQUAL LESS
@@ -28,6 +28,7 @@
 %type <Cat.Pat> Pat
 %type <Cat.Pat list> Pats
 %type <Cat.FunDec list> FunDecs
+%type <Cat.TyDec list> TyDecs
 %type <Cat.Dec> Dec
 
 %%
@@ -35,8 +36,12 @@
 Prog : FunDecs Exp EOF { ([],$1,$2) }
 ;
 
+TyDecs : TYPE ID EQUAL LPAR Types RPAR TyDecs
+                       { Cat.TyDec (#1 $2, $5, $1) :: $7 }
+       |               { [] }
+
 FunDecs : FUN ID COLON Type ARROW Type Match END FunDecs
-                       { (#1 $2, $4, $6, $7, $1) :: $9 }
+                       { Cat.FunDec (#1 $2, $4, $6, $7, $1) :: $9 }
         |              { [] }
 ;
 
