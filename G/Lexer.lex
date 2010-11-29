@@ -56,12 +56,14 @@ rule Token = parse
   | `(`                 { Parser.LPAR (getPos lexbuf) }
   | `)`                 { Parser.RPAR (getPos lexbuf) }
   | `:`                 { Parser.COLON (getPos lexbuf) }
+  | `;`                 { Parser.SEMICOLON (getPos lexbuf) }
   | "->"                { Parser.ARROW (getPos lexbuf) }
   | "=>"                { Parser.MATCHARROW (getPos lexbuf) }
   | `|`                 { Parser.BAR (getPos lexbuf) }
   | `,`                 { Parser.COMMA (getPos lexbuf) }
   | `=`                 { Parser.EQUAL (getPos lexbuf) }
   | `<`                 { Parser.LESS (getPos lexbuf) }
+  | `@`                 { Parser.AT (getPos lexbuf) }
   | eof                 { Parser.EOF (getPos lexbuf) }
   | _                   { lexerError lexbuf "Illegal symbol in input" }
 

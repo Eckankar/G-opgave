@@ -11,6 +11,7 @@
 %token <(int*int)> IF THEN ELSE
 %token <(int*int)> EQUAL LESS
 %token <(int*int)> AND OR NOT
+%token <(int*int)> AT SEMICOLON
 
 %right BAR
 %right MATCHARROW
@@ -20,6 +21,7 @@
 %start Prog
 %type <Cat.Prog> Prog
 %type <Cat.Type> Type
+%type <Cat.Type list> Types
 %type <Cat.Exp> Exp
 %type <Cat.Exp list> Exps
 %type <Cat.Match> Match
@@ -39,13 +41,23 @@ FunDecs : FUN ID COLON Type ARROW Type Match END FunDecs
 ;
 
 Type : INT             { Cat.Int $1 }
+     | BOOL            { Cat.Bool $1 }
+     | ID              { Cat.TyVar $1 }
 ;
+
+Types : Type           { [$1] }
+      | Types COMMA Types
+                       { $1 @ $3 }
 
 Pat : NUM              { Cat.NumP $1 }
+    | TRUE             { Cat.TrueP $1 }
+    | FALSE            { Cat.FalseP $1 }
+    | AT               { Cat.NullP $1 }
     | ID               { Cat.VarP $1 }
+    | LPAR Pats RPAR   { Cat.TupleP ($2, $1) }
 ;
 
-Pats : Pat             { [Cat.Pat $1] }
+Pats : Pat             { [$1] }
      | Pats COMMA Pats { $1 @ $3 }
 ;
 
@@ -58,6 +70,7 @@ Match : Pat MATCHARROW Exp
 Exp :  NUM             { Cat.Num $1 }
      | TRUE            { Cat.True $1 }
      | FALSE           { Cat.False $1 }
+     | AT COLON ID     { Cat.Null (#1 $3, $1) }
      | ID              { Cat.Var $1 }
      | Exp PLUS Exp    { Cat.Plus ($1, $3, $2) }
      | Exp MINUS Exp   { Cat.Minus ($1, $3, $2) }
@@ -77,3 +90,7 @@ Exp :  NUM             { Cat.Num $1 }
      | WRITE Exp       { Cat.Write ($2, $1) }
      | LPAR Exp RPAR   { $2 }
 ;
+
+Dec : Pat EQUAL Exp    { [Cat.Dec ($1, $3, $2)] }
+    | Dec SEMICOLON Dec
+                       { $1 @ $3 }
