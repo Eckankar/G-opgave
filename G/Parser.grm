@@ -26,6 +26,7 @@
 %type <Cat.Pat> Pat
 %type <Cat.Pat list> Pats
 %type <Cat.FunDec list> FunDecs
+%type <Cat.Dec> Dec
 
 %%
 
