@@ -1,0 +1,114 @@
+\documentclass[a4paper, oneside, final]{memoir}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+
+%math, code and algorithms
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{cancel}
+\usepackage{clrscode3e}
+\usepackage{listings}
+
+%table stuff
+\usepackage[usenames, dvipsnames]{color}
+\usepackage[table]{xcolor}
+\definecolor{tableShade}{RGB}{245,245,245}
+\usepackage{multirow}
+\usepackage{booktabs}
+%\usepackage{ctable} %read about these at some point
+
+%links
+\usepackage{url}
+\usepackage[colorlinks=true]{hyperref}
+\hypersetup{linkcolor=RoyalBlue,anchorcolor=RoyalBlue,citecolor=RoyalBlue,urlcolor=RoyalBlue}
+
+%graphics
+\usepackage{graphicx}
+\usepackage{tikz}
+
+%misc
+\usepackage{pdfpages}
+
+%theorems
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{lem}{Lemma}[section]
+
+%commands
+\renewcommand{\ttdefault}{pcr} %better typewriter font
+
+\newcommand{\mono}[1]{{\ttfamily#1}}
+
+\newcommand{\N}{\mathbb N} %the natural numbers
+\newcommand{\Z}{\mathbb Z} %the integers
+\newcommand{\Q}{\mathbb Q} %the rational numbers
+\newcommand{\R}{\mathbb R} %the real numbers
+\newcommand{\C}{\mathbb C} %the complex numbers
+
+%listing settings - sml
+\lstloadlanguages{HTML}
+\lstset{language     = ML,
+        extendedchars= true,
+        breaklines   = false,
+        tabsize      = 2,
+        showstringspaces = false,
+        basicstyle   = \small\ttfamily,
+        commentstyle = \em,
+        inputencoding= utf8
+      }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% End of preamble
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Info
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Oversætter - G opgaven}
+\author{Daniel Egeberg\\
+        Sebastian Paaske Tørholm\\
+        Søren Dahlgaard}
+\date{\today}
+
+\chapterstyle{hangnum}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Document
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%Maybe make a better titlepage.
+\maketitle
+
+\newpage
+\frontmatter
+
+\tableofcontents
+
+\newpage
+\mainmatter
+\pagestyle{headings}
+
+\include{lexer}
+\include{parser}
+\include{type}
+\include{compiler}
+
+
+%appendix here:
+\backmatter
+\chapterstyle{default}
+
+%Bibliography here:
+\bibliographystyle{alpha}
+\bibliography{../oversaetter}
+
+\end{document}
