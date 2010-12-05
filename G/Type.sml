@@ -108,7 +108,7 @@ struct
         (case lookup tn ttable of
           SOME _ => checkTyDec ttable (name, tlist, pos)
         | NONE   =>
-      raise Error ("Unknown type "^tn^" used in type declaration", pos))
+      raise Error ("Unknown type "^tn^" used in type declaration", tpos))
     | checkTyDec ttable (name, _ :: tlist, pos) =
         checkTyDec ttable (name, tlist, pos)
 
