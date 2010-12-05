@@ -1,3 +1,4 @@
+(* vim: set ts=2 sw=2 sts=2 expandtab: *)
 structure Type :> Type =
 struct
 
@@ -25,6 +26,8 @@ struct
   fun checkType te ttable =
     case te of
       Cat.Int _ => Int
+    | Cat.Bool _ => Bool
+    | Cat.TyVar (n, _) => TyVar n
 
   (* Check pattern and return vtable *)
   fun checkPat pat ty ttable pos =
@@ -82,6 +85,15 @@ struct
     | checkMatch [] tce vtable ftable ttable pos =
         raise Error ("Empty match",pos)
 
+  (* builds a table of the declared types *)
+  fun getTyDecs [] ttable = ttable
+    | getTyDecs ((name, tlist, pos)::ts) ttable =
+      if List.exists (fn (n,_)=>n=name) ttable
+      then raise Error ("Duplicate declaration of type "^name, pos)
+      else getTyDecs ts
+      ((name, List.map (fn t => checkType t ttable) tlist) :: ttable)
+
+  (* builds a table of the declared functions *)
   fun getFunDecs [] ttable ftable = ftable
     | getFunDecs ((f, targ, tresult, m, pos)::fs) ttable ftable =
         if List.exists (fn (g,_)=>f=g) ftable
@@ -90,6 +102,17 @@ struct
 			((f, (checkType targ ttable, checkType tresult ttable))
 			 :: ftable)
 
+  (* checks validity of declared types *)
+  fun checkTyDec ttable (name, [], _) = name
+    | checkTyDec ttable (name, (Cat.TyVar (tn, tpos)) :: tlist, pos) =
+        (case lookup tn ttable of
+          SOME _ => checkTyDec ttable (name, tlist, pos)
+        | NONE   =>
+      raise Error ("Unknown type "^tn^" used in type declaration", pos))
+    | checkTyDec ttable (name, _ :: tlist, pos) =
+        checkTyDec ttable (name, tlist, pos)
+
+  (* checks types of declared functions *)
   fun checkFunDec ftable ttable (f, targ, tresult, m, pos) =
     let
       val argtype = checkType targ ttable
@@ -103,7 +126,8 @@ struct
 
   fun checkProgram (tyDecs, funDecs, e) =
     let
-      val ttable = []
+      val ttable = getTyDecs tyDecs []
+      val _ = List.map (checkTyDec ttable) tyDecs
       val ftable = getFunDecs funDecs ttable []
       val _ = List.map (checkFunDec ftable ttable) funDecs
     in
