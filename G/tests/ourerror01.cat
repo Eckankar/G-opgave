@@ -1,0 +1,6 @@
+// ourerror01.cat
+// declares a type using another type that doesn't exist.
+
+type body = (head, torso, legs)
+
+x = @ : body
