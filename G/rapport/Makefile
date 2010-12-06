@@ -1,7 +1,7 @@
 BASENAME=root
 OUTDIR=$(CURDIR)/output
 
-default: compile view
+default: compile
 compile:
 	@mkdir -p $(CURDIR)/output
 	#pdflatex -output-directory=output/ $(BASENAME).tex
