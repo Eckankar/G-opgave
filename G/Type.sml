@@ -36,10 +36,21 @@ struct
     | (Cat.VarP (x,p), ty) => [(x,ty)]
     | _ => raise Error ("Pattern doesn't match type", pos)
 
+  (* Rewrites a let statement to a nested sequence of case statements *)
+  fun letToCase [] e0 pos = e0
+    | letToCase ((p, e, pos)::decs) e0 pos =
+      Cat.Case (e, [(p, letToCase decs e0 pos)], pos)
+
   (* check expression and return type *)
   fun checkExp exp vtable ftable ttable =
     case exp of
       Cat.Num (n,pos) => Int
+    | Cat.True (pos)  => Bool
+    | Cat.False (pos) => Bool
+    | Cat.Null (name, pos) =>
+        (case lookup name ttable of
+           SOME _ => TyVar name
+         | NONE   => raise Error ("Unknown type "^name, pos))
     | Cat.Var (x,pos) =>
        (case lookup x vtable of
 	  SOME t => t
@@ -54,6 +65,66 @@ struct
               checkExp e2 vtable ftable ttable) of
           (Int,Int) => Int
         | _ => raise Error ("Non-int argument to -",pos))
+    | Cat.Equal (e1, e2, pos) =>
+        let
+          val t1 = checkExp e1 vtable ftable ttable;
+          val t2 = checkExp e2 vtable ftable ttable
+        in
+          if t1 = t2
+          then Bool
+          else raise Error ("Different type arguemtns to =", pos)
+        end
+    | Cat.Less (e1, e2, pos) =>
+        (case (checkExp e1 vtable ftable ttable,
+               checkExp e2 vtable ftable ttable) of
+            (Int, Int) => Bool
+          | _ => raise Error ("Non-int argument to <", pos))
+    | Cat.Not (e, pos) =>
+        (case checkExp e vtable ftable ttable of
+            Bool => Bool
+          | _ => raise Error ("Non-bool argument to not", pos))
+    | Cat.And (e1, e2, pos) =>
+        (case (checkExp e1 vtable ftable ttable,
+               checkExp e2 vtable ftable ttable) of
+            (Bool, Bool) => Bool
+          | _ => raise Error ("Non-bool argument to and", pos))
+    | Cat.Or (e1, e2, pos) =>
+        (case (checkExp e1 vtable ftable ttable,
+               checkExp e2 vtable ftable ttable) of
+            (Bool, Bool) => Bool
+          | _ => raise Error ("Non-bool argument to and", pos))
+    | Cat.Let (decs, exp, pos) =>
+        checkExp (letToCase decs exp pos) vtable ftable ttable
+    | Cat.If (cond, e1, e2, pos) =>
+        let
+          val ctype = checkExp cond vtable ftable ttable;
+          val t1 = checkExp e1 vtable ftable ttable;
+          val t2 = checkExp e2 vtable ftable ttable
+        in
+          if ctype = Bool
+          then
+            if t1 = t2
+            then t1
+            else raise Error ("Non-matching expression types in if", pos)
+          else raise Error ("Non-boolean condition in if", pos)
+        end
+    | Cat.MkTuple (exps, name, pos) =>
+      let
+        val expType = map (fn x => checkExp x vtable ftable ttable) exps;
+        val decType = (case lookup name ttable of
+                          SOME t => t
+                        | NONE   => raise Error ("Non-existing type "^name,pos))
+      in
+        if expType = decType
+        then TyVar name
+        else raise Error ("Expression doesn't match type "^name,pos)
+      end
+    | Cat.Case (e, m, pos) =>
+      let
+        val etype = checkExp e vtable ftable ttable;
+      in
+        checkMatch m etype vtable ftable ttable pos
+      end
     | Cat.Apply (f,e1,pos) =>
        (case lookup f ftable of
 	  SOME (t1,t2) =>
