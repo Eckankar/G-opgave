@@ -1,22 +1,21 @@
 BASENAME=root
+STARTDIR=$(CURDIR)
 OUTDIR=$(CURDIR)/output
 
 default: compile
 compile:
-	@mkdir -p $(CURDIR)/output
-	#pdflatex -output-directory=output/ $(BASENAME).tex
-	#cd $(CURDIR)/output
-	#bibtex $(CURDIR)/output/rapport.aux
-	#cd $(CURDIR)
-	pdflatex -output-directory=output/ $(BASENAME).tex && pdflatex -output-directory=output/ $(BASENAME).tex
+	@mkdir -p $(OUTDIR)
+	pdflatex -output-directory="$(OUTDIR)" $(BASENAME).tex
+	-cd $(OUTDIR) && bibtex $(BASENAME)
+	pdflatex -output-directory="$(OUTDIR)" $(BASENAME).tex
+	pdflatex -output-directory="$(OUTDIR)" $(BASENAME).tex
 
 
 view: compile
-	evince $(CURDIR)/output/$(BASENAME).pdf
+	evince $(OUTDIR)/$(BASENAME).pdf
 
 print:
 	cat $(BASENAME).pdf | ssh ask.diku.dk lpr -P s2a
 
 clean:
 	rm -r $(OUTDIR)
-
