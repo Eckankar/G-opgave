@@ -5,7 +5,7 @@ default: compile
 compile:
 	@mkdir -p $(OUTDIR)
 	pdflatex -output-directory="$(OUTDIR)" $(BASENAME).tex
-	-cd $(OUTDIR) && bibtex $(BASENAME)
+	-cd $(OUTDIR); bibtex $(BASENAME)
 	pdflatex -output-directory="$(OUTDIR)" $(BASENAME).tex
 	pdflatex -output-directory="$(OUTDIR)" $(BASENAME).tex
 
