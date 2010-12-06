@@ -1,5 +1,6 @@
 BASENAME=root
 OUTDIR=$(CURDIR)/output
+PRINTER=s2a
 
 default: compile
 compile:
@@ -14,7 +15,7 @@ view: compile
 	evince $(OUTDIR)/$(BASENAME).pdf
 
 print:
-	cat $(BASENAME).pdf | ssh ask.diku.dk lpr -P s2a
+	cat $(BASENAME).pdf | ssh ask lpr -P $(PRINTER)
 
 clean:
 	rm -r $(OUTDIR)
