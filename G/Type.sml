@@ -33,7 +33,20 @@ struct
   fun checkPat pat ty ttable pos =
     case (pat,ty) of
       (Cat.NumP _, Int) => []
+    | (Cat.TrueP _, Bool) => []
+    | (Cat.FalseP _, Bool) => []
+    | (Cat.NullP _, TyVar _) => []
     | (Cat.VarP (x,p), ty) => [(x,ty)]
+    | (Cat.TupleP (ps, pos), TyVar t) =>
+        let
+          val ts = (case lookup t ttable of
+                      SOME types => types
+                    | NONE => raise Error ("Non-existing type "^t, pos))
+        in
+          ListPair.foldr (fn (p, t, vs) =>
+            (checkPat p t ttable pos) @ vs
+          ) [] (ps, ts)
+        end
     | _ => raise Error ("Pattern doesn't match type", pos)
 
   (* Rewrites a let statement to a nested sequence of case statements *)
