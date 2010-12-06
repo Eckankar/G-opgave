@@ -44,7 +44,7 @@ struct
                     | NONE => raise Error ("Non-existing type "^t, pos))
         in
           ListPair.foldr (fn (p, t, vs) =>
-            (checkPat p t ttable pos) @ vs
+            combineTables(checkPat p t ttable pos, vs)
           ) [] (ps, ts)
         end
     | _ => raise Error ("Pattern doesn't match type", pos)
