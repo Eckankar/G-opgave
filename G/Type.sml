@@ -43,9 +43,12 @@ struct
                       SOME types => types
                     | NONE => raise Error ("Non-existing type "^t, pos))
         in
-          ListPair.foldr (fn (p, t, vs) =>
-            combineTables(checkPat p t ttable pos, vs)
-          ) [] (ps, ts)
+          if List.length ts = List.length ps
+          then
+            ListPair.foldr (fn (p, t, vs) =>
+              combineTables (checkPat p t ttable pos) vs pos
+            ) [] (ps, ts)
+          else raise Error ("Tuple size doesn't match type", pos)
         end
     | _ => raise Error ("Pattern doesn't match type", pos)
 
