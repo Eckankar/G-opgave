@@ -1,4 +1,38 @@
 \chapter{Lexer}
-Stuff goes here. The lexer is pretty simple, so not much needed.
+The lexer is generated with \mono{mosmllex} from the lexer file
+\mono{Lexer.lex}.
 
-Torbens bog \cite{Mogensen10}.
+In order to cover all of Cat we have added the following to the file:
+
+\begin{description}
+\item [Added keywords] This is pretty straight forward and can be seen in
+        listing \ref{lst:lex_keyword}.
+\item [Added tokens] We've added $,$, $=$, $<$ and $@$ to the tokens recognized
+        by the lexer. This can be seen in listing \ref{lst:lex_tokens} in
+        appendix \ref{app:listings}.
+\end{description}
+
+\begin{lstlisting}
+fun keyword (s, pos) =                     
+     case s of                             
+         "end"          => Parser.END pos
+       | "int"          => Parser.INT pos
+       | "fun"          => Parser.FUN pos
+       | "read"         => Parser.READ pos
+       | "write"        => Parser.WRITE pos
+       | "if"           => Parser.IF pos
+       | "then"         => Parser.THEN pos
+       | "else"         => Parser.ELSE pos
+       | "case"         => Parser.CASE pos
+       | "of"           => Parser.OF pos
+       | "let"          => Parser.LET pos
+       | "in"           => Parser.IN pos
+       | "true"         => Parser.TRUE pos
+       | "false"        => Parser.FALSE pos
+       | "bool"         => Parser.BOOL pos
+       | "and"          => Parser.AND pos
+       | "or"           => Parser.OR pos
+       | "not"          => Parser.NOT pos
+       | "type"         => Parser.TYPE pos
+       | _              => Parser.ID (s, pos) 
+\end{lstlisting}\label{lst:lex_keyword}
