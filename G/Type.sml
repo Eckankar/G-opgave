@@ -69,7 +69,7 @@ struct
          | NONE   => raise Error ("Unknown type "^name, pos))
     | Cat.Var (x,pos) =>
        (case lookup x vtable of
-	  SOME t => t
+          SOME t => t
         | _ => raise Error ("Unknown variable "^x,pos))
     | Cat.Plus (e1,e2,pos) =>
        (case (checkExp e1 vtable ftable ttable,
@@ -88,7 +88,7 @@ struct
         in
           if t1 = t2
           then Bool
-          else raise Error ("Different type arguemtns to =", pos)
+          else raise Error ("Different type arguments to =", pos)
         end
     | Cat.Less (e1, e2, pos) =>
         (case (checkExp e1 vtable ftable ttable,
@@ -143,11 +143,11 @@ struct
       end
     | Cat.Apply (f,e1,pos) =>
        (case lookup f ftable of
-	  SOME (t1,t2) =>
-	    if t1 = (checkExp e1 vtable ftable ttable)
-            then t2
-            else raise Error ("Argument does not match declaration of "^f,pos)
-        | _ => raise Error ("Unknown function "^f,pos))
+            SOME (t1,t2) =>
+              if t1 = (checkExp e1 vtable ftable ttable)
+              then t2
+              else raise Error ("Argument does not match declaration of "^f,pos)
+          | _ => raise Error ("Unknown function "^f,pos))
     | Cat.Read (n,pos) => Int
     | Cat.Write (e1,pos) =>
        (case checkExp e1 vtable ftable ttable of
@@ -158,7 +158,7 @@ struct
         let
           val vtable1 = checkPat p tce ttable pos
         in
-	  checkExp e (vtable1 @ vtable) ftable ttable
+          checkExp e (vtable1 @ vtable) ftable ttable
         end
     | checkMatch ((p,e)::ms) tce vtable ftable ttable pos =
         let
@@ -166,8 +166,8 @@ struct
           val te = checkExp e (vtable1 @ vtable) ftable ttable
           val tm = checkMatch ms tce vtable ftable ttable pos
         in
-	  if te = tm then te
-	  else raise Error ("Match branches have different type",pos)
+          if te = tm then te
+          else raise Error ("Match branches have different type",pos)
         end
     | checkMatch [] tce vtable ftable ttable pos =
         raise Error ("Empty match",pos)
@@ -184,10 +184,9 @@ struct
   fun getFunDecs [] ttable ftable = ftable
     | getFunDecs ((f, targ, tresult, m, pos)::fs) ttable ftable =
         if List.exists (fn (g,_)=>f=g) ftable
-	then raise Error ("Duplicate declaration of function "^f,pos)
+        then raise Error ("Duplicate declaration of function "^f,pos)
         else getFunDecs fs ttable
-			((f, (checkType targ ttable, checkType tresult ttable))
-			 :: ftable)
+          ((f, (checkType targ ttable, checkType tresult ttable)) :: ftable)
 
   (* checks validity of declared types *)
   fun checkTyDec ttable (name, [], _) = name
