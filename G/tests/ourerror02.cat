@@ -1,0 +1,9 @@
+// ourerror2.cat
+// uncalled function with unbound variable
+
+fun add : int -> int
+ x => x+y
+end
+
+3
+
