@@ -1,4 +1,31 @@
 \chapter{Type checker}
-Stuff goes here. Don't have any idea what though :P
 
-I guess we should include some code examples with lstlistings.
+The type checker is implemented in \texttt{Type.sml}. The following changes
+were made made to implement the remainder of the Cat language:
+
+\begin{enumerate}
+    \item {
+        The remaining types were added to \texttt{checkType}.
+    }
+    \item {
+        The remaining patterns were added to \texttt{checkPat}, which
+        checks a pattern and returns a symbol table for variables. For
+        \texttt{Cat.TupleP} it was necessary doing a recursive check using
+        \texttt{foldr}.
+    }
+    \item {
+        The majority of the changes were made in \texttt{checkExp}, which does
+        type checking on a Cat expression. The remaining expressions were
+        added to ensure that expressions are valid according to the semantics
+        in Cat. Checking \texttt{let} expressions is done by converting it to
+        an equivalent \texttt{case} expression using the \texttt{letToCase}
+        function that has been added as well.
+    }
+    \item {
+        A symbol table containing the type declarations is made using the
+        \texttt{getTyDecs} function. These are then checked for validity by
+        \texttt{checkTyDec}. Calls to these functions have been added to
+        \texttt{checkProgram}, which is also declared in \texttt{Type.sig} and
+        is the main function for the type checker.
+    }
+\end{enumerate}
