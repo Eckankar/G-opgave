@@ -36,6 +36,11 @@ struct
   val maxCaller = 15   (* highest caller-saves register *)
   val maxReg = 26      (* highest allocatable register *)
 
+  (* Rewrites a let statement to a nested sequence of case statements *)
+  fun letToCase [] e0 pos = e0
+    | letToCase ((p, e, pos)::decs) e0 pos =
+      Cat.Case (e, [(p, letToCase decs e0 pos)], pos)
+
   (* compile pattern *)
   fun compilePat p v vtable fail =
     case p of
@@ -57,14 +62,28 @@ struct
         ([Mips.BEQ (v, "0", fail)], vtable)
     | Cat.FalseP (pos) =>
         ([Mips.BNE (v, "0", fail)], vtable)
-    | Cat.NullP (pos) => ([], vtable) (* TODO *)
+    | Cat.NullP (pos) =>
+        ([Mips.BNE (v, "0", fail)], vtable)
     | Cat.VarP (x,pos) =>
         let
           val xt = "_patVar_"^x^"_"^newName()
         in
           ([Mips.MOVE (xt,v)], (x,xt)::vtable)
         end
-    | Cat.TupleP (ps, pos) => ([], vtable) (* TODO *)
+    | Cat.TupleP (ps, pos) =>
+        let
+          val (code, _, nvtable) =
+            foldl (fn (p, (a, i, vtable)) =>
+                    let
+                      val tp = "_tuplepp_"^newName()
+                      val tv = "_tuplepv_"^newName()
+                      val (code, nvtable) = compilePat p tv vtable fail
+                    in
+                      ([Mips.LW (tv, v, makeConst i)] @ code @ a, i+4, nvtable)
+                    end) ([], 0, vtable) ps
+        in
+          (code, nvtable)
+        end
 
   (* compile expression *)
   fun compileExp e vtable place =
@@ -165,7 +184,8 @@ struct
                    Mips.LI (place, makeConst 1),
                    Mips.LABEL ldone]
         end
-    | Cat.Let (decs, exp, pos) => [] (* TODO *)
+    | Cat.Let (decs, exp, pos) =>
+        compileExp (letToCase decs exp pos) vtable place
     | Cat.If (cond, e1, e2, pos) =>
         let
           val tc = "_ifcond_"^newName()
@@ -186,19 +206,34 @@ struct
     | Cat.MkTuple (exps, name, pos) =>
         let
           val tsize = length exps
+          val thp = "_mktuplehp_"^newName()
         in
-          [Mips.ADDI (HP, HP, makeConst(4*tsize))] @
+          [Mips.MOVE (thp, HP),
+           Mips.ADDI (HP, HP, makeConst(4*tsize))] @
           #1 (foldl (fn (e, (a, i)) =>
                   let
                     val t = "_mktuple_"^newName()
                     val code = compileExp e vtable t
                   in
-                    (code @ [Mips.SW (t, HP, makeConst i)] @ a, i+4)
+                    (code @ [Mips.SW (t, thp, makeConst i)] @ a, i+4)
                   end)
                 ([], 0) exps) @
-          [Mips.MOVE (HP, place)]
+          [Mips.MOVE (thp, place)]
         end
-    | Cat.Case (e, m, pos) => [] (* TODO *)
+    | Cat.Case (e, m, pos) =>
+        let
+          val t = "_case_"^newName()
+          val code = compileExp e vtable t
+          val lend = "_casee_"^newName()
+          val lerror = "_caseerror_"^newName()
+        in
+          code @
+          compileMatch m t place lend lerror vtable @
+          [Mips.LABEL lerror,
+           Mips.LI ("5", makeConst (#1 pos)),
+           Mips.J "_Error_",
+           Mips.LABEL lend]
+        end
     | Cat.Apply (f,e,pos) =>
         let
           val t1 = "_apply_"^newName()
