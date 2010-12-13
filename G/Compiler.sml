@@ -69,6 +69,9 @@ struct
         else
           [Mips.LUI (place, makeConst (n div 65536)),
           Mips.ORI (place, place, makeConst (n mod 65536))]
+    | Cat.True (pos) => [Mips.LI (place, makeConst 1)]
+    | Cat.False (pos) => [Mips.LI (place, makeConst 0)]
+    | Cat.Null (name, pos) => [] (* TODO *)
     | Cat.Var (x,pos) => [Mips.MOVE (place, lookup x vtable pos)]
     | Cat.Plus (e1,e2,pos) =>
         let
@@ -88,6 +91,61 @@ struct
         in
           code1 @ code2 @ [Mips.SUB (place,t1,t2)]
         end
+    | Cat.Equal (e1, e2, pos) => [] (* TODO *)
+    | Cat.Less (e1, e2, pos) =>
+        let
+          val t1 = "_less1_"^newName()
+          val t2 = "_less2_"^newName()
+          val code1 = compileExp e1 vtable t1
+          val code2 = compileExp e2 vtable t2
+        in
+          code1 @ code2 @ [Mips.SLT (place,t1,t2)]
+        end
+    | Cat.Not (e, pos) =>
+        let
+          val t = "_not_"^newName()
+          val code = compileExp e vtable t
+        in
+          code @ [Mips.SLTI (place,t,"1")]
+        end
+    | Cat.And (e1, e2, pos) =>
+        let
+          val t1 = "_and1_"^newName()
+          val t2 = "_and2_"^newName()
+          val code1 = compileExp e1 vtable t1
+          val code2 = compileExp e2 vtable t2
+        in
+          code1 @ code2 @ [Mips.AND (place,t1,t2)]
+        end
+    | Cat.Or (e1, e2, pos) =>
+        let
+          val t1 = "_or1_"^newName()
+          val t2 = "_or2_"^newName()
+          val code1 = compileExp e1 vtable t1
+          val code2 = compileExp e2 vtable t2
+        in
+          code1 @ code2 @ [Mips.OR (place,t1,t2)]
+        end
+    | Cat.Let (decs, exp, pos) => [] (* TODO *)
+    | Cat.If (cond, e1, e2, pos) =>
+        let
+          val tc = "_ifcond_"^newName()
+          val t1 = "_if1_"^newName()
+          val t2 = "_if2_"^newName()
+          val codec = compileExp cond vtable tc
+          val code1 = compileExp e1 vtable t1
+          val code2 = compileExp e2 vtable t2
+          val lfalse = "_iffalse_"^newName()
+          val lend = "_ifend_"^newName()
+        in
+          codec @ [Mips.BNE (tc, "0", lfalse)]
+                @ code1
+                @ [Mips.J lend, Mips.LABEL lfalse]
+                @ code2
+                @ [Mips.LABEL lend]
+        end
+    | Cat.MkTuple (exps, name, pos) => [] (* TODO *)
+    | Cat.Case (e, m, pos) => [] (* TODO *)
     | Cat.Apply (f,e,pos) =>
         let
           val t1 = "_apply_"^newName()
@@ -101,13 +159,13 @@ struct
          Mips.SYSCALL,
          Mips.MOVE (place,"2")]
     | Cat.Write (e,pos) =>
-        compileExp e vtable place
-        @ [Mips.MOVE ("4",place),
-           Mips.LI ("2","1"),  (* write_int syscall *)
-           Mips.SYSCALL,
-           Mips.LA ("4","_cr_"),
-           Mips.LI ("2","4"),  (* write_string syscall *)
-           Mips.SYSCALL]
+        compileExp e vtable place @
+        [Mips.MOVE ("4",place),
+         Mips.LI ("2","1"),  (* write_int syscall *)
+         Mips.SYSCALL,
+         Mips.LA ("4","_cr_"),
+         Mips.LI ("2","4"),  (* write_string syscall *)
+         Mips.SYSCALL]
 
   and compileMatch [] arg res endLabel failLabel vtable =
         [Mips.J failLabel]
