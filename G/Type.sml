@@ -86,7 +86,7 @@ struct
           val t1 = checkExp e1 vtable ftable ttable;
           val t2 = checkExp e2 vtable ftable ttable
         in
-          if t1 = t2
+          if t1 = t2 andalso (t1 = Int orelse t1 = Bool)
           then Bool
           else raise Error ("Different type arguments to =", pos)
         end
