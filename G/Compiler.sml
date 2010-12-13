@@ -41,18 +41,18 @@ struct
     case p of
       Cat.NumP (n,pos) =>
         let
-    val t = "_constPat_"^newName()
+          val t = "_constPat_"^newName()
         in
           if n<32768 then
-      ([Mips.LI (t, makeConst n),
-        Mips.BNE (v,t,fail)],
-       vtable)
-    else
-      ([Mips.LUI (t, makeConst (n div 65536)),
-        Mips.ORI (t, t, makeConst (n mod 65536)),
-        Mips.BNE (v,t,fail)],
-       vtable)
-  end
+            ([Mips.LI (t, makeConst n),
+              Mips.BNE (v,t,fail)],
+             vtable)
+          else
+            ([Mips.LUI (t, makeConst (n div 65536)),
+              Mips.ORI (t, t, makeConst (n mod 65536)),
+              Mips.BNE (v,t,fail)],
+             vtable)
+        end
     | Cat.VarP (x,pos) =>
         let
           val xt = "_patVar_"^x^"_"^newName()
