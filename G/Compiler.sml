@@ -53,12 +53,18 @@ struct
               Mips.BNE (v,t,fail)],
              vtable)
         end
+    | Cat.TrueP (pos) =>
+        ([Mips.BEQ (v, "0", fail)], vtable)
+    | Cat.FalseP (pos) =>
+        ([Mips.BNE (v, "0", fail)], vtable)
+    | Cat.NullP (pos) => ([], vtable) (* TODO *)
     | Cat.VarP (x,pos) =>
         let
           val xt = "_patVar_"^x^"_"^newName()
         in
           ([Mips.MOVE (xt,v)], (x,xt)::vtable)
         end
+    | Cat.TupleP (ps, pos) => ([], vtable) (* TODO *)
 
   (* compile expression *)
   fun compileExp e vtable place =
