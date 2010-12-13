@@ -65,49 +65,49 @@ struct
     case e of
       Cat.Num (n,pos) =>
         if n<32768 then
-    [Mips.LI (place, makeConst n)]
-  else
-    [Mips.LUI (place, makeConst (n div 65536)),
-     Mips.ORI (place, place, makeConst (n mod 65536))]
+          [Mips.LI (place, makeConst n)]
+        else
+          [Mips.LUI (place, makeConst (n div 65536)),
+          Mips.ORI (place, place, makeConst (n mod 65536))]
     | Cat.Var (x,pos) => [Mips.MOVE (place, lookup x vtable pos)]
     | Cat.Plus (e1,e2,pos) =>
         let
-    val t1 = "_plus1_"^newName()
-    val t2 = "_plus2_"^newName()
+          val t1 = "_plus1_"^newName()
+          val t2 = "_plus2_"^newName()
           val code1 = compileExp e1 vtable t1
           val code2 = compileExp e2 vtable t2
-  in
-    code1 @ code2 @ [Mips.ADD (place,t1,t2)]
-  end
+        in
+          code1 @ code2 @ [Mips.ADD (place,t1,t2)]
+        end
     | Cat.Minus (e1,e2,pos) =>
         let
-    val t1 = "_minus1_"^newName()
-    val t2 = "_minus2_"^newName()
+          val t1 = "_minus1_"^newName()
+          val t2 = "_minus2_"^newName()
           val code1 = compileExp e1 vtable t1
           val code2 = compileExp e2 vtable t2
-  in
-    code1 @ code2 @ [Mips.SUB (place,t1,t2)]
-  end
+        in
+          code1 @ code2 @ [Mips.SUB (place,t1,t2)]
+        end
     | Cat.Apply (f,e,pos) =>
-  let
-    val t1 = "_apply_"^newName()
-    val code1 = compileExp e vtable t1
-  in
-    code1 @
+        let
+          val t1 = "_apply_"^newName()
+          val code1 = compileExp e vtable t1
+        in
+          code1 @
           [Mips.MOVE ("2",t1), Mips.JAL (f,["2"]), Mips.MOVE (place,"2")]
-  end
+        end
     | Cat.Read pos =>
         [Mips.LI ("2","5"), (* read_int syscall *)
          Mips.SYSCALL,
          Mips.MOVE (place,"2")]
     | Cat.Write (e,pos) =>
-  compileExp e vtable place
+        compileExp e vtable place
         @ [Mips.MOVE ("4",place),
-     Mips.LI ("2","1"),  (* write_int syscall *)
-     Mips.SYSCALL,
-     Mips.LA ("4","_cr_"),
-     Mips.LI ("2","4"),  (* write_string syscall *)
-     Mips.SYSCALL]
+           Mips.LI ("2","1"),  (* write_int syscall *)
+           Mips.SYSCALL,
+           Mips.LA ("4","_cr_"),
+           Mips.LI ("2","4"),  (* write_string syscall *)
+           Mips.SYSCALL]
 
   and compileMatch [] arg res endLabel failLabel vtable =
         [Mips.J failLabel]
