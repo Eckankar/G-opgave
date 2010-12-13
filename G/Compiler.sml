@@ -218,7 +218,7 @@ struct
                     (code @ [Mips.SW (t, thp, makeConst i)] @ a, i+4)
                   end)
                 ([], 0) exps) @
-          [Mips.MOVE (thp, place)]
+          [Mips.MOVE (place, thp)]
         end
     | Cat.Case (e, m, pos) =>
         let
