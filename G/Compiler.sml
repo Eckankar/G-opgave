@@ -77,7 +77,7 @@ struct
           Mips.ORI (place, place, makeConst (n mod 65536))]
     | Cat.True (pos) => [Mips.LI (place, makeConst 1)]
     | Cat.False (pos) => [Mips.LI (place, makeConst 0)]
-    | Cat.Null (name, pos) => [] (* TODO *)
+    | Cat.Null (name, pos) => [Mips.LI (place, makeConst 0)]
     | Cat.Var (x,pos) => [Mips.MOVE (place, lookup x vtable pos)]
     | Cat.Plus (e1,e2,pos) =>
         let
@@ -97,7 +97,22 @@ struct
         in
           code1 @ code2 @ [Mips.SUB (place,t1,t2)]
         end
-    | Cat.Equal (e1, e2, pos) => [] (* TODO *)
+    | Cat.Equal (e1, e2, pos) =>
+        let
+          val t1 = "_equal1_"^newName()
+          val t2 = "_equal2_"^newName()
+          val code1 = compileExp e1 vtable t1
+          val code2 = compileExp e2 vtable t2
+          val lequal = "_equall_"^newName()
+          val ldone = "_equald_"^newName()
+        in
+          code1 @ code2 @ [Mips.BEQ (t1, t2, lequal),
+                           Mips.LI (place, makeConst 0),
+                           Mips.J ldone,
+                           Mips.LABEL lequal
+                           Mips.LI (place, makeConst 1),
+                           Mips.LABEL ldone]
+        end
     | Cat.Less (e1, e2, pos) =>
         let
           val t1 = "_less1_"^newName()
@@ -120,8 +135,17 @@ struct
           val t2 = "_and2_"^newName()
           val code1 = compileExp e1 vtable t1
           val code2 = compileExp e2 vtable t2
+          val lfalse = "_andf_"^newName()
+          val ldone = "_andd_"^newName()
         in
-          code1 @ code2 @ [Mips.AND (place,t1,t2)]
+          code1 @ [Mips.BEQ (t1, "0", lfalse)]
+                @ code2
+                @ [Mips.BEQ (t2, "0", lfalse)
+                   Mips.LI (place, makeConst 1),
+                   Mips.J ldone,
+                   Mips.LABEL lfalse,
+                   Mips.LI (place, makeConst 0),
+                   Mips.LABEL ldone]
         end
     | Cat.Or (e1, e2, pos) =>
         let
@@ -129,8 +153,17 @@ struct
           val t2 = "_or2_"^newName()
           val code1 = compileExp e1 vtable t1
           val code2 = compileExp e2 vtable t2
+          val ltrue = "_ort_"^newName()
+          val ldone = "_ord_"^newName()
         in
-          code1 @ code2 @ [Mips.OR (place,t1,t2)]
+          code1 @ [Mips.BEQ (t1, "1", ltrue)]
+                @ code2
+                @ [Mips.BEQ (t2, "1", ltrue)
+                   Mips.LI (place, makeConst 0),
+                   Mips.J ldone,
+                   Mips.LABEL ltrue,
+                   Mips.LI (place, makeConst 1),
+                   Mips.LABEL ldone]
         end
     | Cat.Let (decs, exp, pos) => [] (* TODO *)
     | Cat.If (cond, e1, e2, pos) =>
