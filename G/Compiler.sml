@@ -197,7 +197,7 @@ struct
           val lfalse = "_iffalse_"^newName()
           val lend = "_ifend_"^newName()
         in
-          codec @ [Mips.BNE (tc, "0", lfalse)]
+          codec @ [Mips.BEQ (tc, "0", lfalse)]
                 @ code1
                 @ [Mips.J lend, Mips.LABEL lfalse]
                 @ code2
