@@ -1,0 +1,10 @@
+// ourtest01.cat
+// create and print the contents of a list
+type list = (int, list)
+
+fun print : list -> int
+  @      => 0
+| (e, l) => let a = write e in print l
+end
+
+print (1, (2, (3, @:list):list):list):list
