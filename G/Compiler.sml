@@ -175,9 +175,9 @@ struct
           val ltrue = "_ort_"^newName()
           val ldone = "_ord_"^newName()
         in
-          code1 @ [Mips.BEQ (t1, "1", ltrue)]
+          code1 @ [Mips.BNE (t1, "0", ltrue)]
                 @ code2
-                @ [Mips.BEQ (t2, "1", ltrue),
+                @ [Mips.BNE (t2, "0", ltrue),
                    Mips.LI (place, makeConst 0),
                    Mips.J ldone,
                    Mips.LABEL ltrue,
