@@ -215,7 +215,7 @@ struct
                     val t = "_mktuple_"^newName()
                     val code = compileExp e vtable t
                   in
-                    (code @ [Mips.SW (t, thp, makeConst i)] @ a, i+4)
+                    (a @ code @ [Mips.SW (t, thp, makeConst i)], i+4)
                   end)
                 ([], 0) exps) @
           [Mips.MOVE (place, thp)]
