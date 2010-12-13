@@ -148,7 +148,7 @@ struct
               then t2
               else raise Error ("Argument does not match declaration of "^f,pos)
           | _ => raise Error ("Unknown function "^f,pos))
-    | Cat.Read (n,pos) => Int
+    | Cat.Read (pos) => Int
     | Cat.Write (e1,pos) =>
        (case checkExp e1 vtable ftable ttable of
           Int => Int
