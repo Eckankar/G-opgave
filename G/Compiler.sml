@@ -199,9 +199,12 @@ struct
         in
           codec @ [Mips.BEQ (tc, "0", lfalse)]
                 @ code1
-                @ [Mips.J lend, Mips.LABEL lfalse]
+                @ [Mips.MOVE (place, t1),
+                   Mips.J lend,
+                   Mips.LABEL lfalse]
                 @ code2
-                @ [Mips.LABEL lend]
+                @ [Mips.MOVE (place, t2),
+                   Mips.LABEL lend]
         end
     | Cat.MkTuple (exps, name, pos) =>
         let
