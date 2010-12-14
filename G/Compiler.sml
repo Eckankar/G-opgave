@@ -63,7 +63,8 @@ struct
     | Cat.FalseP (pos) =>
         ([Mips.BNE (v, "0", fail)], vtable)
     | Cat.NullP (pos) =>
-        ([Mips.BNE (v, "0", fail)], vtable)
+        ([Mips.COMMENT "Null pattern",
+          Mips.BNE (v, "0", fail)], vtable)
     | Cat.VarP (x,pos) =>
         let
           val xt = "_patVar_"^x^"_"^newName()
@@ -79,10 +80,10 @@ struct
                       val tv = "_tuplepv_"^newName()
                       val (code, nvtable) = compilePat p tv vtable fail
                     in
-                      ([Mips.LW (tv, v, makeConst i)] @ code @ a, i+4, nvtable)
+                      (a @ [Mips.LW (tv, v, makeConst i)] @ code, i+4, nvtable)
                     end) ([], 0, vtable) ps
         in
-          (code, nvtable)
+          ([Mips.COMMENT "Tuple pattern", Mips.BEQ (v, "0", fail)] @ code, nvtable)
         end
 
   (* compile expression *)
