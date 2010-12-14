@@ -8,4 +8,4 @@ fun insert : ti -> tree
      else (t1,m,insert(t2,n):ti):tree
 end
 
-insert ((@:tree, 1, @:tree), 2, (@:tree, 3, (@:tree, 4, @:tree)))
+insert (((@:tree, 1, @:tree):tree, 2, (@:tree, 6, (@:tree, 7, @:tree):tree):tree):tree, 4):ti
