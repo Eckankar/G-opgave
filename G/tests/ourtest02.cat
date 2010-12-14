@@ -4,10 +4,9 @@
 type tree = (tree, int, tree)
 
 fun printTree : tree -> int
-    (l, v, r) => let a = printTree l in
-                 let b = write v in
-                 let c = printTree r in
-                    0
+    (l, v, r) => let a = printTree l;
+                     b = write v;
+                     c = printTree r in 0
   | @ => 0
 end
 
