@@ -1,0 +1,14 @@
+// ourtest02.cat
+// Constructs a simple tree, inorder-traverses and prints it.
+
+type tree = (tree, int, tree)
+
+fun printTree : tree -> int
+    (l, v, r) => let a = printTree l in
+                 let b = write v in
+                 let c = printTree r in
+                    0
+  | @ => 0
+end
+
+printTree ((@:tree, 1, @:tree):tree, 2, (@:tree, 3, @:tree):tree):tree
