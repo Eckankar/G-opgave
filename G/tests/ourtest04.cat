@@ -1,0 +1,18 @@
+type list = (int, list)
+type tree = (tree,int,tree)
+type ti = (tree,int)
+type lt = (list, tree)
+
+fun insertAll : lt -> tree
+  (@,t) => t
+| ((n,l),t) => insertAll (l,insert(t,n):ti):lt
+end
+
+fun insert : ti -> tree
+  (@,n) => (@:tree, n, @:tree):tree
+| ((t1,m,t2),n) =>
+     if n<m then (insert(t1,n):ti,m,t2):tree
+     else (t1,m,insert(t2,n):ti):tree
+end
+
+insertAll ((1, (2, (3, @:list):list):list):list, @:tree):lt
