@@ -1,0 +1,21 @@
+// ourtest03.cat
+// Flattens a tree and prints it.
+
+type tree = (tree, int, tree)
+type list = (int, list)
+type tl = (tree, list)
+
+fun flatten : tl -> list
+  (@,l) => l
+| ((t1,n,t2),l) => flatten(t1,(n,flatten(t2,l):tl):list):tl
+end
+
+fun print : list -> int
+  (v, l) => let a = write v in print l
+| @ => 0
+end
+
+let
+    ls = flatten (((@:tree, 1, @:tree):tree, 2, (@:tree, 3, @:tree):tree):tree, @:list):tl
+in
+    print ls
