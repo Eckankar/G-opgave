@@ -1,0 +1,11 @@
+type tree = (tree,int,tree)
+type ti = (tree,int)
+
+fun insert : ti -> tree
+  (@,n) => (@:tree, n, @:tree):tree
+| ((t1,m,t2),n) =>
+     if n<m then (insert(t1,n):ti,m,t2):tree
+     else (t1,m,insert(t2,n):ti):tree
+end
+
+insert ((@:tree, 1, @:tree), 2, (@:tree, 3, (@:tree, 4, @:tree)))
