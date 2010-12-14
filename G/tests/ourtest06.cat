@@ -1,0 +1,4 @@
+// ourtest06.cat
+// check if we're actually returning a value from our if
+
+write if true then 4 else 5
