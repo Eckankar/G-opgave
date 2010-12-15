@@ -1,1 +1,123 @@
 \chapter{Tests}
+In order to thoroughly test our type checker we found that a few testcases
+were missing. These are shown below:
+
+\begin{figure}
+    \centering
+    \begin{lstlisting}
+        type body = (head, torso, legs)
+
+        x = @ : body
+    \end{lstlisting}
+    \label{fig:tests:error01}
+    \caption{Error01: Declaration of a type composed of nonexisting types.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{lstlisting}
+        fun add : int -> int
+          x => x+y
+        end
+
+        add 5
+    \end{lstlisting}
+    \label{fig:tests:error02}
+    \caption{Error02: Function body uses an undeclared variable.}
+\end{figure}
+
+
+\section{Debugging of compilers}
+In the processing of testing our compiler we ran into problems with the qsort
+and treesort examples. In order to debug these more easily we partitioned the
+treesort code into several smaller tests.
+
+\begin{figure}
+    \centering
+    \begin{lstlisting}
+        type list = (int, list)
+
+        fun print : list -> int
+          @      => 0
+        | (e, l) =>  let a = write e in print l
+        end
+
+        print (1, (2, (3, @:list):list):list):list
+    \end{lstlisting}
+    \label{fig:tests:test01}
+    \caption{Test01: Simple printing of a list. A more isolated testcase than
+             the predefined ones.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{lstlisting}
+        type tree = (tree, int, tree)
+
+        fun printTree : tree -> int
+            (l, v, r) => let a = printTree l;
+                             b = write v;
+                             c = printTree r in 0
+          | @ => 0
+        end
+
+        printTree ((@:tree, 1, @:tree):tree, 2, (@:tree, 3, @:tree):tree):tree
+    \end{lstlisting}
+    \label{fig:tests:test02}
+    \caption{Test02: Simple printing of a tree. A more isolated testcase than
+             the predefined ones.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{lstlisting}
+        type tree = (tree, int, tree)
+        type list = (int, list)
+        type tl = (tree, list)
+
+        fun flatten : tl -> list
+            (@,l) => l
+          | ((t1,n,t2),l) => flatten(t1,(n,flatten(t2,l):tl):list):tl
+        end
+
+        fun print : list -> int
+            (v, l) => let a = write v in print l
+          | @ => 0
+        end
+
+        let
+          ls = flatten (((@:tree, 1, @:tree):tree, 2, (@:tree, 3, @:tree):tree):tree, @:list):tl
+        in
+          print ls
+    \end{lstlisting}
+    \label{fig:tests:test03}
+    \caption{Test03: Flattens a tree and prints it.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{lstlisting}
+        type tree = (tree,int,tree)
+        type ti = (tree,int)
+
+        fun insert : ti -> tree
+            (@,n) => (@:tree, n, @:tree):tree
+          | ((t1,m,t2),n) =>
+               if n<m then (insert(t1,n):ti,m,t2):tree
+               else (t1,m,insert(t2,n):ti):tree
+        end
+
+        insert (((@:tree, 1, @:tree):tree, 2, (@:tree, 6, @:tree):tree):tree, 4):ti
+    \end{lstlisting}
+    \label{fig:tests:test03}
+    \caption{Test04: Test of insert from treesort on a predefined tree.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{lstlisting}
+        write if true then 4 else 5
+    \end{lstlisting}
+    \label{fig:tests:test03}
+    \caption{Test05: Test of return values from \texttt{if}-statement.}
+\end{figure}
