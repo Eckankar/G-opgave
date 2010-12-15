@@ -9,10 +9,11 @@ were made made to implement the remainder of the Cat language:
     }
     \item {
         The remaining patterns were added to \texttt{checkPat}, which
-        checks a pattern and returns a symbol table for variables. For
-        \texttt{Cat.TupleP} it was necessary doing a recursive check using
-        \texttt{foldr}. This is handled by first retrieving the list of types
-        specifying the tuple and then comparing it recursively to the input.
+        checks a pattern and returns a symbol table for variables.
+        For \texttt{Cat.TupleP} (\autoref{fig:type:tuplep}), it was
+        necessary doing a recursive check using \texttt{foldr}. This is
+        handled by first retrieving the list of types specifying the
+        tuple and then comparing it recursively to the input.
     }
     \item {
         The majority of the changes were made in \texttt{checkExp}, which does
@@ -36,7 +37,8 @@ were made made to implement the remainder of the Cat language:
         \item {
             \texttt{let} expressions have also been implemented by using the
             semantic definition. We simply convert them to a case expression
-            using an auxilliary function, \texttt{letToCase}.
+            using an auxilliary function, \texttt{letToCase}, which has been
+            included as \autoref{fig:type:lettocase}.
         }
         \item {
             We check the type of \texttt{Cat.MkType} by looking up the list of
@@ -52,3 +54,34 @@ were made made to implement the remainder of the Cat language:
         is the main function for the type checker.
     }
 \end{enumerate}
+\begin{figure}
+    \centering
+    \begin{lstlisting}
+    | (Cat.TupleP (ps, pos), TyVar t) =>
+        let
+          val ts = (case lookup t ttable of
+                      SOME types => types
+                    | NONE => raise Error ("Non-existing type "^t, pos))
+        in
+          if List.length ts = List.length ps
+          then
+            ListPair.foldr (fn (p, t, vs) =>
+              combineTables (checkPat p t ttable pos) vs pos
+            ) [] (ps, ts)
+          else raise Error ("Tuple size doesn't match type", pos)
+        end
+    \end{lstlisting}
+    \label{fig:type:tuplep}
+    \caption{Type checking of tuple patterns.}
+\end{figure}
+\begin{figure}
+    \centering
+    \begin{lstlisting}
+  (* Rewrites a let statement to a nested sequence of case statements *)
+  fun letToCase [] e0 pos = e0
+    | letToCase ((p, e, pos)::decs) e0 pos =
+      Cat.Case (e, [(p, letToCase decs e0 pos)], pos)
+    \end{lstlisting}
+    \label{fig:type:lettocase}
+    \caption{\texttt{letToCase}: converts a \texttt{let}-expression to a nested series of \texttt{case}-expressions.}
+\end{figure}
