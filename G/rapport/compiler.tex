@@ -1,6 +1,9 @@
 \chapter{Compiler}
 
 \section{Representation}
+The Cat language has three kinds of types: integers, booleans and user defined
+tuples. We have chosen to represent them the following way:
+
 \begin{description}
     \item[int] {
         Integers use their natural representation as signed 32 bit integers.
@@ -14,24 +17,30 @@
         allocate $4n$ bytes on the heap and save the values sequentially in
         this memory. The value returned is then a pointer to the first element
         of the tuple. To represent the value null, we make the natural choice
-        of using a null pointer.
+        of using a null pointer. If a tuple consists of other tuples, these
+        represented as their addresses on the heap.
     }
 \end{description}
 
+
 \section{Other stuff}
+Following are some other design choices we have made:
 
-In general we often opt for using new variables, rather than reusing old ones.
-This limits the lifetime of variables, which helps limit the amount of
-registers needed by the register allocator.
+\begin{description}
+\item [New variables] In general we often opt for using new variables, rather
+        than reusing old ones. This limits the lifetime of variables, which
+        helps limit the amount of registers needed by the register allocator.
 
-Since the domain of \texttt{=} isn't explicitly specified, we chose to make it
-work on values of types \texttt{int} and \texttt{bool}. This choice was made
-for the sake of simplicity.
+\item [Domain of equality] Since the domain of \texttt{=} isn't explicitly
+        specified, we chose to make it work only on values of types
+        \texttt{int} and \texttt{bool}. This choice was made for the sake of
+        simplicity.
 
-\texttt{not} is implemented in a slightly tricky way, as seen in
-\autoref{fig:compiler:not}. We use the fact that booleans are always
-represented as $0$ or $1$, which means that doing a \texttt{SLTI} with
-$1$ always will flip the number to the opposite one.
+\item [Negation] \texttt{not} is implemented in a slightly tricky way, as seen
+        in \autoref{fig:compiler:not}. We use the fact that booleans are always
+        represented as $0$ or $1$, which means that doing a \texttt{SLTI} with
+        $1$ always will flip the number to the opposite one.
+\end{description}
 
 \begin{figure}
     \centering
