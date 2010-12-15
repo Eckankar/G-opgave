@@ -1,0 +1,4 @@
+// ourerror03.cat
+// Try to assign to a non-matching pattern.
+
+let 1 = 2 in true
