@@ -11,15 +11,38 @@ were made made to implement the remainder of the Cat language:
         The remaining patterns were added to \texttt{checkPat}, which
         checks a pattern and returns a symbol table for variables. For
         \texttt{Cat.TupleP} it was necessary doing a recursive check using
-        \texttt{foldr}.
+        \texttt{foldr}. This is handled by first retrieving the list of types
+        specifying the tuple and then comparing it recursively to the input.
     }
     \item {
         The majority of the changes were made in \texttt{checkExp}, which does
         type checking on a Cat expression. The remaining expressions were
         added to ensure that expressions are valid according to the semantics
-        in Cat. Checking \texttt{let} expressions is done by converting it to
-        an equivalent \texttt{case} expression using the \texttt{letToCase}
-        function that has been added as well.
+        in Cat.
+        \begin{enumerate}
+        \item {
+            We've added handling of boolean expressions. This covers the
+            constants which just resolve to a bool. We've also added operators
+            returning bools such as \texttt{and}, \texttt{or}, etc. These
+            have been structured in the same way as the arithmetic operations:
+            First we evaluate the two expressions and then we compare them
+            resulting in either a bool or an error.
+        }
+        \item {
+            We've also added case expressions. These are made by using the 
+            \texttt{checkMatch} auxilliary function. This used our additions to
+            \texttt{checkPat} to check the patterns correctly.
+        }
+        \item {
+            \texttt{let} expressions have also been implemented by using the
+            semantic definition. We simply convert them to a case expression
+            using an auxilliary function, \texttt{letToCase}.
+        }
+        \item {
+            We check the type of \texttt{Cat.MkType} by looking up the list of
+            types in the symbol table and compare it to the argument.
+        }
+        \end{enumerate}
     }
     \item {
         A symbol table containing the type declarations is made using the
