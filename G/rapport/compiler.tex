@@ -1,13 +1,53 @@
 \chapter{Compiler}
-Stuff goes here. Guess we should include code pieces like in the
-type checker. Should probably talk about register allocation as well and
-our translation to MIPS.
 
-\begin{itemize}
-\item Cat.NOT bruger slti
-\item Cat.If, bruger bne for at kunne bruge \$0
-\item Null-tupler repræsenteres ved adressen 0
-\item Almindelige tupler allokeres på hoben
-\item Equals virker kun på int og bool
-\item Equals bruger en ny variabel for at gøre det nemmere for registerallokatoren
-\end{itemize}
+\section{Representation}
+\begin{description}
+    \item[int] {
+        Integers use their natural representation as signed 32 bit integers.
+    }
+    \item[bool] {
+        Booleans are represented as the values \texttt{0} and \texttt{1}.
+    }
+    \item[Tuples] {
+        We have chosen to represent our tuples like you would arrays of the
+        same length on the heap. That is, given a tuple of length $n$, we
+        allocate $4n$ bytes on the heap and save the values sequentially in
+        this memory. The value returned is then a pointer to the first element
+        of the tuple. To represent the value null, we make the natural choice
+        of using a null pointer.
+    }
+\end{description}
+
+\section{Other stuff}
+
+In general we often opt for using new variables, rather than reusing old ones.
+This limits the lifetime of variables, which helps limit the amount of
+registers needed by the register allocator.
+
+Since the domain of \texttt{=} isn't explicitly specified, we chose to make it
+work on values of types \texttt{int} and \texttt{bool}. This choice was made
+for the sake of simplicity.
+
+\texttt{not} is implemented in a slightly tricky way, as seen in
+\autoref{fig:compiler:not}. We use the fact that booleans are always
+represented as $0$ or $1$, which means that doing a \texttt{SLTI} with
+$1$ always will flip the number to the opposite one.
+
+\begin{figure}
+    \centering
+    \begin{lstlisting}
+    | Cat.Not (e, pos) =>
+        let
+          val t = "_not_"^newName()
+          val code = compileExp e vtable t
+        in
+          code @ [Mips.SLTI (place,t,"1")]
+        end
+    \end{lstlisting}
+    \label{fig:compiler:not}
+    \caption{Implementation of \texttt{not}.}
+\end{figure}
+
+% Stuff goes here. Guess we should include code pieces like in the type
+% checker. Should probably talk about register allocation as well and our
+% translation to MIPS.
