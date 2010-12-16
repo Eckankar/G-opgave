@@ -27,6 +27,15 @@ shown in captions.
     \caption{ourerror02: Function body uses an undeclared variable.}
 \end{figure}
 
+\begin{figure}
+    \centering
+    \begin{lstlisting}
+        let 1 = 2 in true
+    \end{lstlisting}
+    \label{fig:tests:error03}
+    \caption{ourerror03: No matching pattern.}
+\end{figure}
+
 
 \section{Debugging of compiler}
 In the processing of testing our compiler we ran into problems with the qsort
@@ -114,7 +123,7 @@ target register.
         insert (((@:tree, 1, @:tree):tree, 2, (@:tree, 6, @:tree):tree):tree, 4):ti
     \end{lstlisting}
     \label{fig:tests:test04}
-    \caption{ourtest04: Test of insert from treesort on a predefined tree.}
+    \caption{ourtest05: Test of insert from treesort on a predefined tree.}
 \end{figure}
 
 \begin{figure}
@@ -123,5 +132,5 @@ target register.
         write if true then 4 else 5
     \end{lstlisting}
     \label{fig:tests:test05}
-    \caption{ourtest05: Test of return values from \texttt{if}-statement.}
+    \caption{ourtest06: Test of return values from \texttt{if}-statement.}
 \end{figure}
