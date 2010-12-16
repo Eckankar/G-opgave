@@ -23,7 +23,7 @@ tuples. We have chosen to represent them the following way:
 \end{description}
 
 
-\section{Other stuff}
+\section{Specific implementations}
 Following are some other design choices we have made:
 
 \begin{description}
@@ -40,6 +40,20 @@ Following are some other design choices we have made:
         in \autoref{fig:compiler:not}. We use the fact that booleans are always
         represented as $0$ or $1$, which means that doing a \texttt{SLTI} with
         $1$ always will flip the number to the opposite one.
+
+\item [Let expressions] Like in the type checker we are doing these by
+        converting them to a case expression with an auxilliary function,
+        \mono{letToCase}.
+
+\item [Pattern matching] This is also done much like the type checker. The
+        simple types (int, bools, etc.) are evaluated pretty straightforward.
+        Tuples are evaluated recursively on all the values of the tuple. We
+        also check if the tuple we are comparing with is null before we try to
+        read the addresses from the heap.
+
+\item [Shortcircuiting] We've made sure that \texttt{and} and \texttt{or} are
+        shortcircuiting in order to pass the \texttt{logic.cat} test. This is
+        done in pretty straightforward fashion.
 \end{description}
 
 \begin{figure}
