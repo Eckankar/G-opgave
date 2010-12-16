@@ -11,7 +11,7 @@ shown in captions.
         x = @ : body
     \end{lstlisting}
     \label{fig:tests:error01}
-    \caption{Error01: Declaration of a type composed of nonexisting types.}
+    \caption{ourerror01: Declaration of a type composed of nonexisting types.}
 \end{figure}
 
 \begin{figure}
@@ -24,7 +24,7 @@ shown in captions.
         add 5
     \end{lstlisting}
     \label{fig:tests:error02}
-    \caption{Error02: Function body uses an undeclared variable.}
+    \caption{ourerror02: Function body uses an undeclared variable.}
 \end{figure}
 
 
@@ -49,8 +49,8 @@ target register.
         print (1, (2, (3, @:list):list):list):list
     \end{lstlisting}
     \label{fig:tests:test01}
-    \caption{Test01: Simple printing of a list. A more isolated testcase than
-             the predefined ones.}
+    \caption{ourtest01: Simple printing of a list. A more isolated testcase 
+             than the predefined ones.}
 \end{figure}
 
 \begin{figure}
@@ -68,8 +68,8 @@ target register.
         printTree ((@:tree, 1, @:tree):tree, 2, (@:tree, 3, @:tree):tree):tree
     \end{lstlisting}
     \label{fig:tests:test02}
-    \caption{Test02: Simple printing of a tree. A more isolated testcase than
-             the predefined ones.}
+    \caption{ourtest02: Simple printing of a tree. A more isolated testcase
+             than the predefined ones.}
 \end{figure}
 
 \begin{figure}
@@ -95,7 +95,7 @@ target register.
           print ls
     \end{lstlisting}
     \label{fig:tests:test03}
-    \caption{Test03: Flattens a tree and prints it.}
+    \caption{ourtest03: Flattens a tree and prints it.}
 \end{figure}
 
 \begin{figure}
@@ -114,7 +114,7 @@ target register.
         insert (((@:tree, 1, @:tree):tree, 2, (@:tree, 6, @:tree):tree):tree, 4):ti
     \end{lstlisting}
     \label{fig:tests:test04}
-    \caption{Test04: Test of insert from treesort on a predefined tree.}
+    \caption{ourtest04: Test of insert from treesort on a predefined tree.}
 \end{figure}
 
 \begin{figure}
@@ -123,5 +123,5 @@ target register.
         write if true then 4 else 5
     \end{lstlisting}
     \label{fig:tests:test05}
-    \caption{Test05: Test of return values from \texttt{if}-statement.}
+    \caption{ourtest05: Test of return values from \texttt{if}-statement.}
 \end{figure}
