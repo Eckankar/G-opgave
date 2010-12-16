@@ -1,6 +1,7 @@
 \chapter{Tests}
 In order to thoroughly test our type checker we found that a few testcases
-were missing. These are shown below:
+were missing. These are shown below. Descriptions of the different tests are
+shown in captions.
 
 \begin{figure}
     \centering
@@ -27,10 +28,13 @@ were missing. These are shown below:
 \end{figure}
 
 
-\section{Debugging of compilers}
+\section{Debugging of compiler}
 In the processing of testing our compiler we ran into problems with the qsort
 and treesort examples. In order to debug these more easily we partitioned the
-treesort code into several smaller tests.
+treesort code into several smaller tests. These can be seen in listings
+\ref{fig:tests:test01} through \ref{fig:tests:test05}. As it can be seen we
+had a problem with our if-statements not placing the correct result in the
+target register.
 
 \begin{figure}
     \centering
@@ -109,7 +113,7 @@ treesort code into several smaller tests.
 
         insert (((@:tree, 1, @:tree):tree, 2, (@:tree, 6, @:tree):tree):tree, 4):ti
     \end{lstlisting}
-    \label{fig:tests:test03}
+    \label{fig:tests:test04}
     \caption{Test04: Test of insert from treesort on a predefined tree.}
 \end{figure}
 
@@ -118,6 +122,6 @@ treesort code into several smaller tests.
     \begin{lstlisting}
         write if true then 4 else 5
     \end{lstlisting}
-    \label{fig:tests:test03}
+    \label{fig:tests:test05}
     \caption{Test05: Test of return values from \texttt{if}-statement.}
 \end{figure}
